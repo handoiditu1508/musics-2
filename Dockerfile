@@ -11,5 +11,5 @@ EXPOSE 80
 # Runs Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
 
-# docker build -t react-template .
-# docker run -p 80:80 react-template
+# docker build -t musics-2 .
+# docker run -p 80:80 musics-2
