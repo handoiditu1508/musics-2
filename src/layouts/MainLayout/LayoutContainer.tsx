@@ -3,7 +3,7 @@ import { Container, ContainerProps, styled } from "@mui/material";
 
 const LayoutContainer = styled(({
   disableGutters = true,
-  maxWidth = "lg",
+  maxWidth = false,
   ...props
 }: ContainerProps) => (
   <Container
