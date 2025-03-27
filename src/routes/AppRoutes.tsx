@@ -5,13 +5,14 @@ import { Route, Routes } from "react-router-dom";
 import MainRoute from "./MainRoute";
 
 const MainLayout = React.lazy(() => import("@/layouts/MainLayout"));
+const SecondLayout = React.lazy(() => import("@/layouts/SecondLayout"));
 
 export default function AppRoutes() {
   const { t } = useTranslation();
 
   return (
     <Routes>
-      <Route element={<Suspense><MainLayout /></Suspense>}>
+      <Route element={<Suspense><SecondLayout /></Suspense>}>
         {MainRoute}
         <Route
           path="*"
