@@ -4,6 +4,7 @@ import appApi from "./apis/appApi";
 import authSlice from "./slices/authSlice";
 import counterSlice from "./slices/counterSlice";
 import { notificationSlice } from "./slices/notificationSlice";
+import secondLayoutSlice from "./slices/secondLayoutSlice";
 import rtkQueryErrorLoggerMiddleware from "./utils/rtkQueryErrorLoggerMiddleware";
 
 // development environment only
@@ -15,6 +16,7 @@ const store = configureStore({
     [authSlice.name]: authSlice.reducer,
     [counterSlice.name]: counterSlice.reducer,
     [notificationSlice.name]: notificationSlice.reducer,
+    [secondLayoutSlice.name]: secondLayoutSlice.reducer,
     [appApi.reducerPath]: appApi.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
