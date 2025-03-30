@@ -1,8 +1,8 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectBottomHeight, selectSidebarOpen, selectSidebarWidth, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import { Box, CSSObject, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, useTheme } from "@mui/material";
+import { Box, CSSObject, Drawer, IconButton, Theme, useTheme } from "@mui/material";
+import SidebarTab from "./SidebarTab";
 
 const openedMixin = (theme: Theme, sidebarWidth: number): CSSObject => ({
   width: sidebarWidth,
@@ -64,18 +64,7 @@ function Sidebar() {
           sx: togglingCss,
         }}
         onClose={() => dispatch(toggleSidebar(false))}>
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={index}>
-              <ListItemButton>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        <SidebarTab />
       </Drawer>
     </Box>
   );

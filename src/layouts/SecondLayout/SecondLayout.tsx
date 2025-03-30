@@ -1,13 +1,12 @@
 import Suspense from "@/components/Suspense";
 import { useAppSelector } from "@/hooks";
 import { selectBottomHeight } from "@/redux/slices/secondLayoutSlice";
-import { Box, Paper, useTheme } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Bottombar from "./Bottombar";
 import Sidebar from "./Sidebar";
 
 function SecondLayout() {
-  const theme = useTheme();
   const bottomHeight = useAppSelector(selectBottomHeight);
 
   return (
