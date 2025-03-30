@@ -1,13 +1,17 @@
 import FaSvgIcon from "@/components/FaSvgIcon";
+import { useAppSelector } from "@/hooks";
+import { selectBottomHeight } from "@/redux/slices/secondLayoutSlice";
 import { faFaceKissWinkHeart } from "@fortawesome/free-solid-svg-icons/faFaceKissWinkHeart";
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
 import { Box, Tab, TabProps, Tabs } from "@mui/material";
 import { useState } from "react";
+import SongsTabPanel from "./SongsTabPanel";
 
 type TabItem = {
   id: number;
   tabId: string;
   tabPanelId: string;
+  tabPanel: React.ReactNode;
 } & Pick<TabProps, "label" | "icon" | "iconPosition">;
 
 const tabItems: TabItem[] = [
@@ -18,6 +22,7 @@ const tabItems: TabItem[] = [
     tabPanelId: "sidebar-tabpanel-0",
     icon: <FaSvgIcon icon={faMusic} />,
     iconPosition: "start",
+    tabPanel: <SongsTabPanel />,
   },
   {
     id: 1,
@@ -26,19 +31,30 @@ const tabItems: TabItem[] = [
     tabPanelId: "sidebar-tabpanel-1",
     icon: <FaSvgIcon icon={faFaceKissWinkHeart} />,
     iconPosition: "end",
+    tabPanel: <Box>Artists</Box>,
   },
 ];
 
 function SidebarTab() {
   const [tabValue, setTabValue] = useState(0);
+  const bottomHeight = useAppSelector(selectBottomHeight);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
   return (
-    <Box>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+    <Box sx={{
+      display: "flex",
+      flexDirection: "column",
+      height: `calc(100vh - ${bottomHeight}px)`,
+      marginBottom: `${bottomHeight}px`,
+    }}>
+      <Box sx={{
+        borderBottom: 1,
+        borderColor: "divider",
+        flexShrink: 0,
+      }}>
         <Tabs
           value={tabValue}
           variant="fullWidth"
@@ -65,8 +81,12 @@ function SidebarTab() {
           hidden={tabValue !== item.id}
           role="tabpanel"
           id={item.tabPanelId}
-          aria-labelledby={item.tabId}>
-          {tabValue === item.id && <Box>{item.label}</Box>}
+          aria-labelledby={item.tabId}
+          sx={{
+            flex: 1,
+            overflowY: "hidden",
+          }}>
+          {tabValue === item.id && item.tabPanel}
         </Box>
       ))}
     </Box>
