@@ -43,9 +43,9 @@ function Sidebar() {
           right: open ? -14 : -17,
           top: 150,
           zIndex: theme.zIndex.drawer + 1,
-          backgroundColor: `rgba(${theme.palette.background.paperChannel} / 0.5)`,
+          backgroundColor: `rgba(${theme.palette.background.defaultChannel} / 0.5)`,
           ":hover": {
-            backgroundColor: `rgba(${theme.palette.background.paperChannel} / 0.7)`,
+            backgroundColor: `rgba(${theme.palette.background.defaultChannel} / 0.7)`,
           },
         }}
         onClick={() => dispatch(toggleSidebar())}>
@@ -62,6 +62,7 @@ function Sidebar() {
         sx={togglingCss}
         PaperProps={{
           sx: togglingCss,
+          elevation: 3,
         }}
         onClose={() => dispatch(toggleSidebar(false))}>
         <SidebarTab />
