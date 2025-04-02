@@ -1,19 +1,22 @@
+import AudioFile from "@/models/entities/AudioFile";
+import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
 import { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 
-const StyledFixedSizeList = styled(FixedSizeList)(({ theme }) => theme.mixins.scrollbar);
+const StyledFixedSizeList = styled(FixedSizeList<AudioFile[]>)(({ theme }) => theme.mixins.scrollbar);
 
-function CustomListItem(props: ListChildComponentProps) {
-  const { index, style } = props;
+function CustomListItem(props: ListChildComponentProps<AudioFile[]>) {
+  const { index, style, data } = props;
+  const audioFile = data[index];
 
   return (
-    <ListItem key={index} style={style} dense>
+    <ListItem key={audioFile.id} style={style} dense>
       <ListItemButton>
-        <Tooltip title={`A Very Long Long Long Song Name #${index}.mp3`} placement="right" arrow>
+        <Tooltip title={audioFile.name} placement="right" arrow>
           <ListItemText
-            primary={`A Very Long Long Long Song Name #${index}.mp3`}
+            primary={audioFile.name}
             slotProps={{
               primary: {
                 sx: {
@@ -36,6 +39,7 @@ function SongsTabPanel() {
   const [listHeight, setListHeight] = useState<number>(0);
   const listRef = useRef<HTMLDivElement>(null);
   const listSizeObserver = useRef<ResizeObserver>(null);
+  const { isFetching, isError, currentData } = useGetAudioFilesQuery();
 
   useEffect(() => {
     listSizeObserver.current = new ResizeObserver((entries) => {
@@ -94,14 +98,17 @@ function SongsTabPanel() {
           overflowY: "auto",
           ...theme.mixins.scrollbar,
         }}>
-        <StyledFixedSizeList
+        {isFetching && <Box>Skeleton</Box>}
+        {!isFetching && isError && <Box>Error</Box>}
+        {!isFetching && !isError && currentData && <StyledFixedSizeList
           itemSize={36.016}
           height={listHeight}
           itemCount={300}
           width={300}
+          itemData={currentData}
         >
           {CustomListItem}
-        </StyledFixedSizeList>
+        </StyledFixedSizeList>}
       </Box>
     </Box>
   );

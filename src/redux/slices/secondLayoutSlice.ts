@@ -8,7 +8,7 @@ export type SecondLayoutState = {
 };
 
 const initialState: SecondLayoutState = {
-  sidebarOpen: false,
+  sidebarOpen: true,
   sidebarWidth: 300,
   bottomHeight: 100,
 };
