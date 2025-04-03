@@ -1,5 +1,7 @@
+import { useAppSelector } from "@/hooks";
 import AudioFile from "@/models/entities/AudioFile";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
+import { selectAudioFiles } from "@/redux/slices/audioFileSlice";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
 import { ChangeEventHandler, useEffect, useRef, useState } from "react";
@@ -39,7 +41,8 @@ function SongsTabPanel() {
   const [listHeight, setListHeight] = useState<number>(0);
   const listRef = useRef<HTMLDivElement>(null);
   const listSizeObserver = useRef<ResizeObserver>(null);
-  const { isFetching, isError, currentData } = useGetAudioFilesQuery();
+  const { isFetching, isError } = useGetAudioFilesQuery();
+  const audioFiles = useAppSelector(selectAudioFiles);
 
   useEffect(() => {
     listSizeObserver.current = new ResizeObserver((entries) => {
@@ -100,15 +103,16 @@ function SongsTabPanel() {
         }}>
         {isFetching && <Box>Skeleton</Box>}
         {!isFetching && isError && <Box>Error</Box>}
-        {!isFetching && !isError && currentData && <StyledFixedSizeList
+        {!isFetching && !isError && audioFiles.length && <StyledFixedSizeList
           itemSize={36.016}
           height={listHeight}
           itemCount={300}
           width={300}
-          itemData={currentData}
+          itemData={audioFiles}
         >
           {CustomListItem}
         </StyledFixedSizeList>}
+        {!isFetching && !isError && !audioFiles.length && <Box>Empty</Box>}
       </Box>
     </Box>
   );

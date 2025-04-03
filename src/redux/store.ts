@@ -1,6 +1,7 @@
 import { Action, ThunkAction, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import appApi from "./apis/appApi";
+import { audioFilesSlice } from "./slices/audioFileSlice";
 import authSlice from "./slices/authSlice";
 import counterSlice from "./slices/counterSlice";
 import { notificationSlice } from "./slices/notificationSlice";
@@ -17,6 +18,7 @@ const store = configureStore({
     [counterSlice.name]: counterSlice.reducer,
     [notificationSlice.name]: notificationSlice.reducer,
     [secondLayoutSlice.name]: secondLayoutSlice.reducer,
+    [audioFilesSlice.name]: audioFilesSlice.reducer,
     [appApi.reducerPath]: appApi.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
