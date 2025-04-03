@@ -1,8 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
 import { selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, setQuery, setSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
+import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
+import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import { ChangeEventHandler, ReactNode, useDeferredValue, useEffect, useRef, useState } from "react";
@@ -116,7 +117,15 @@ function SongsTabPanel() {
           input: {
             endAdornment: (
               <InputAdornment position="end">
-                <SearchIcon />
+                {
+                  searchValue
+                    ? (
+                      <IconButton edge="end" onClick={() => setSearchValue("")}>
+                        <ClearIcon />
+                      </IconButton>
+                    )
+                    : <SearchIcon />
+                }
               </InputAdornment>
             ),
             sx: {
