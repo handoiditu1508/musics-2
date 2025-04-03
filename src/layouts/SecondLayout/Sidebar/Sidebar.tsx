@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectBottomHeight, selectSidebarOpen, selectSidebarWidth, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Box, CSSObject, Drawer, IconButton, Theme, useTheme } from "@mui/material";
-import SidebarTab from "./SidebarTab";
+import SidebarTabs from "./SidebarTabs";
 
 const openedMixin = (theme: Theme, sidebarWidth: number): CSSObject => ({
   width: sidebarWidth,
@@ -65,7 +65,7 @@ function Sidebar() {
           elevation: 3,
         }}
         onClose={() => dispatch(toggleSidebar(false))}>
-        <SidebarTab />
+        <SidebarTabs />
       </Drawer>
     </Box>
   );

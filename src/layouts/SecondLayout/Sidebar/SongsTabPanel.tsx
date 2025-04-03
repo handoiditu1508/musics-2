@@ -4,7 +4,7 @@ import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
 import { selectAudioFiles, selectSelectedAudioFileId, setSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
-import { ChangeEventHandler, useEffect, useRef, useState } from "react";
+import { ChangeEventHandler, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 
 const StyledFixedSizeList = styled(FixedSizeList<AudioFile[]>)(({ theme }) => theme.mixins.scrollbar);
@@ -41,11 +41,28 @@ function CustomListItem(props: ListChildComponentProps<AudioFile[]>) {
 function SongsTabPanel() {
   const theme = useTheme();
   const [searchValue, setSearchValue] = useState<string>("");
+  const deferredSearchValue = useDeferredValue(searchValue);
   const [listHeight, setListHeight] = useState<number>(0);
   const listRef = useRef<HTMLDivElement>(null);
   const listSizeObserver = useRef<ResizeObserver>(null);
   const { isFetching, isError } = useGetAudioFilesQuery();
   const audioFiles = useAppSelector(selectAudioFiles);
+  const filteredAudioFiles = useMemo(() => {
+    if (!deferredSearchValue) return audioFiles;
+
+    var lowerCaseQuery = deferredSearchValue.toLowerCase();
+
+    return audioFiles
+      .filter((audioFile) => {
+        if (audioFile.name.toLowerCase().includes(lowerCaseQuery)) return true;
+
+        if (audioFile.title.toLowerCase().includes(lowerCaseQuery)) return true;
+
+        if (audioFile.artists.some((artist) => artist.toLowerCase().includes(lowerCaseQuery))) return true;
+
+        return false;
+      });
+  }, [deferredSearchValue, audioFiles]);
 
   useEffect(() => {
     listSizeObserver.current = new ResizeObserver((entries) => {
@@ -106,16 +123,16 @@ function SongsTabPanel() {
         }}>
         {isFetching && <Box>Skeleton</Box>}
         {!isFetching && isError && <Box>Error</Box>}
-        {!isFetching && !isError && audioFiles.length && <StyledFixedSizeList
+        {!isFetching && !isError && !!filteredAudioFiles.length && <StyledFixedSizeList
           itemSize={36.016}
           height={listHeight}
-          itemCount={300}
+          itemCount={filteredAudioFiles.length}
           width={300}
-          itemData={audioFiles}
+          itemData={filteredAudioFiles}
         >
           {CustomListItem}
         </StyledFixedSizeList>}
-        {!isFetching && !isError && !audioFiles.length && <Box>Empty</Box>}
+        {!isFetching && !isError && !filteredAudioFiles.length && <Box>Empty</Box>}
       </Box>
     </Box>
   );

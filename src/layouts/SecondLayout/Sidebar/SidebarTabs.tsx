@@ -35,7 +35,7 @@ const tabItems: TabItem[] = [
   },
 ];
 
-function SidebarTab() {
+function SidebarTabs() {
   const [tabValue, setTabValue] = useState(0);
   const bottomHeight = useAppSelector(selectBottomHeight);
 
@@ -93,4 +93,4 @@ function SidebarTab() {
   );
 }
 
-export default SidebarTab;
+export default SidebarTabs;
