@@ -1,7 +1,7 @@
-import { useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import AudioFile from "@/models/entities/AudioFile";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
-import { selectAudioFiles } from "@/redux/slices/audioFileSlice";
+import { selectAudioFiles, selectSelectedAudioFileId, setSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
 import { ChangeEventHandler, useEffect, useRef, useState } from "react";
@@ -12,10 +12,14 @@ const StyledFixedSizeList = styled(FixedSizeList<AudioFile[]>)(({ theme }) => th
 function CustomListItem(props: ListChildComponentProps<AudioFile[]>) {
   const { index, style, data } = props;
   const audioFile = data[index];
+  const selectedAudioFileId = useAppSelector(selectSelectedAudioFileId);
+  const dispatch = useAppDispatch();
 
   return (
     <ListItem key={audioFile.id} style={style} dense>
-      <ListItemButton>
+      <ListItemButton
+        selected={selectedAudioFileId === audioFile.id}
+        onClick={() => dispatch(setSelectedAudioFileId(audioFile.id))}>
         <Tooltip title={audioFile.name} placement="right" arrow>
           <ListItemText
             primary={audioFile.name}
@@ -37,7 +41,6 @@ function CustomListItem(props: ListChildComponentProps<AudioFile[]>) {
 function SongsTabPanel() {
   const theme = useTheme();
   const [searchValue, setSearchValue] = useState<string>("");
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [listHeight, setListHeight] = useState<number>(0);
   const listRef = useRef<HTMLDivElement>(null);
   const listSizeObserver = useRef<ResizeObserver>(null);
