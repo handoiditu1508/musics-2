@@ -1,31 +1,27 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import AudioFile from "@/models/entities/AudioFile";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
-import { selectAudioFiles, selectSelectedAudioFileId, setSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
+import { selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, setQuery, setSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
+import { Box, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { ChangeEventHandler, ReactNode, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEventHandler, ReactNode, useDeferredValue, useEffect, useRef, useState } from "react";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 
-type VirtualListDataType = {
-  audioFiles: AudioFile[];
-  selectedId?: number;
-  query: string;
-};
+const StyledFixedSizeList = styled(FixedSizeList)(({ theme }) => theme.mixins.scrollbar);
 
-const StyledFixedSizeList = styled(FixedSizeList<VirtualListDataType>)(({ theme }) => theme.mixins.scrollbar);
-
-function CustomListItem(props: ListChildComponentProps<VirtualListDataType>) {
+function CustomListItem(props: ListChildComponentProps) {
   const theme = useTheme();
-  const { index, style, data } = props;
-  const audioFile = data.audioFiles[index];
+  const { index, style } = props;
+  const audioFiles = useAppSelector(selectQueriedAudioFiles);
+  const audioFile = audioFiles[index];
+  const query = useAppSelector(selectQuery);
+  const selectedId = useAppSelector(selectSelectedAudioFileId);
   const dispatch = useAppDispatch();
   let itemText: ReactNode = audioFile.name;
 
-  if (data.query) {
-    const matches = match(audioFile.name, data.query, { insideWords: true, findAllOccurrences: true });
+  if (query) {
+    const matches = match(audioFile.name, query, { insideWords: true, findAllOccurrences: true });
     const parts = parse(audioFile.name, matches);
     itemText = parts.map((part, index) => (
       <Box
@@ -45,7 +41,7 @@ function CustomListItem(props: ListChildComponentProps<VirtualListDataType>) {
   return (
     <ListItem key={audioFile.id} style={style} dense>
       <ListItemButton
-        selected={data.selectedId === audioFile.id}
+        selected={selectedId === audioFile.id}
         onClick={() => dispatch(setSelectedAudioFileId(audioFile.id))}>
         <Tooltip title={audioFile.name} placement="right" arrow>
           <ListItemText
@@ -67,26 +63,20 @@ function CustomListItem(props: ListChildComponentProps<VirtualListDataType>) {
 
 function SongsTabPanel() {
   const theme = useTheme();
-  const [searchValue, setSearchValue] = useState<string>("");
+  const query = useAppSelector(selectQuery);
+  const [searchValue, setSearchValue] = useState<string>(query);
   const deferredSearchValue = useDeferredValue(searchValue);
   const [listHeight, setListHeight] = useState<number>(0);
   const listRef = useRef<HTMLDivElement>(null);
   const listSizeObserver = useRef<ResizeObserver>(null);
   const { isFetching, isError } = useGetAudioFilesQuery();
-  const audioFiles = useAppSelector(selectAudioFiles);
-  const selectedAudioFileId = useAppSelector(selectSelectedAudioFileId);
+  const filteredAudioFiles = useAppSelector(selectQueriedAudioFiles);
+  const dispatch = useAppDispatch();
 
-  const filteredAudioFiles = useMemo(() => {
-    if (!deferredSearchValue) return audioFiles;
-
-    return audioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(deferredSearchValue.toLowerCase()));
-  }, [deferredSearchValue, audioFiles]);
-
-  const virtualListData = useMemo<VirtualListDataType>(() => ({
-    audioFiles: filteredAudioFiles,
-    selectedId: selectedAudioFileId,
-    query: deferredSearchValue,
-  }), [filteredAudioFiles, selectedAudioFileId, deferredSearchValue]);
+  useEffect(() => {
+    dispatch(setQuery(deferredSearchValue));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deferredSearchValue]);
 
   useEffect(() => {
     listSizeObserver.current = new ResizeObserver((entries) => {
@@ -126,9 +116,7 @@ function SongsTabPanel() {
           input: {
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton edge="end">
-                  <SearchIcon />
-                </IconButton>
+                <SearchIcon />
               </InputAdornment>
             ),
             sx: {
@@ -145,6 +133,7 @@ function SongsTabPanel() {
           overflowY: "auto",
           ...theme.mixins.scrollbar,
         }}>
+        {/* todo: skeleton, error, empty */}
         {isFetching && <Box>Skeleton</Box>}
         {!isFetching && isError && <Box>Error</Box>}
         {!isFetching && !isError && !!filteredAudioFiles.length && <StyledFixedSizeList
@@ -152,7 +141,6 @@ function SongsTabPanel() {
           height={listHeight}
           itemCount={filteredAudioFiles.length}
           width={300}
-          itemData={virtualListData}
         >
           {CustomListItem}
         </StyledFixedSizeList>}
