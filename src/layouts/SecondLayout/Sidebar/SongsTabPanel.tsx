@@ -4,25 +4,52 @@ import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
 import { selectAudioFiles, selectSelectedAudioFileId, setSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
-import { ChangeEventHandler, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import match from "autosuggest-highlight/match";
+import parse from "autosuggest-highlight/parse";
+import { ChangeEventHandler, ReactNode, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 
-const StyledFixedSizeList = styled(FixedSizeList<AudioFile[]>)(({ theme }) => theme.mixins.scrollbar);
+type VirtualListDataType = {
+  audioFiles: AudioFile[];
+  selectedId?: number;
+  query: string;
+};
 
-function CustomListItem(props: ListChildComponentProps<AudioFile[]>) {
+const StyledFixedSizeList = styled(FixedSizeList<VirtualListDataType>)(({ theme }) => theme.mixins.scrollbar);
+
+function CustomListItem(props: ListChildComponentProps<VirtualListDataType>) {
+  const theme = useTheme();
   const { index, style, data } = props;
-  const audioFile = data[index];
-  const selectedAudioFileId = useAppSelector(selectSelectedAudioFileId);
+  const audioFile = data.audioFiles[index];
   const dispatch = useAppDispatch();
+  let itemText: ReactNode = audioFile.name;
+
+  if (data.query) {
+    const matches = match(audioFile.name, data.query, { insideWords: true, findAllOccurrences: true });
+    const parts = parse(audioFile.name, matches);
+    itemText = parts.map((part, index) => (
+      <Box
+        key={index}
+        component="span"
+        sx={[
+          part.highlight && {
+            color: theme.palette.primary.contrastText,
+            backgroundColor: theme.palette.primary.light,
+          },
+        ]}>
+        {part.text}
+      </Box>
+    ));
+  }
 
   return (
     <ListItem key={audioFile.id} style={style} dense>
       <ListItemButton
-        selected={selectedAudioFileId === audioFile.id}
+        selected={data.selectedId === audioFile.id}
         onClick={() => dispatch(setSelectedAudioFileId(audioFile.id))}>
         <Tooltip title={audioFile.name} placement="right" arrow>
           <ListItemText
-            primary={audioFile.name}
+            primary={itemText}
             slotProps={{
               primary: {
                 sx: {
@@ -47,22 +74,19 @@ function SongsTabPanel() {
   const listSizeObserver = useRef<ResizeObserver>(null);
   const { isFetching, isError } = useGetAudioFilesQuery();
   const audioFiles = useAppSelector(selectAudioFiles);
+  const selectedAudioFileId = useAppSelector(selectSelectedAudioFileId);
+
   const filteredAudioFiles = useMemo(() => {
     if (!deferredSearchValue) return audioFiles;
 
-    var lowerCaseQuery = deferredSearchValue.toLowerCase();
-
-    return audioFiles
-      .filter((audioFile) => {
-        if (audioFile.name.toLowerCase().includes(lowerCaseQuery)) return true;
-
-        if (audioFile.title.toLowerCase().includes(lowerCaseQuery)) return true;
-
-        if (audioFile.artists.some((artist) => artist.toLowerCase().includes(lowerCaseQuery))) return true;
-
-        return false;
-      });
+    return audioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(deferredSearchValue.toLowerCase()));
   }, [deferredSearchValue, audioFiles]);
+
+  const virtualListData = useMemo<VirtualListDataType>(() => ({
+    audioFiles: filteredAudioFiles,
+    selectedId: selectedAudioFileId,
+    query: deferredSearchValue,
+  }), [filteredAudioFiles, selectedAudioFileId, deferredSearchValue]);
 
   useEffect(() => {
     listSizeObserver.current = new ResizeObserver((entries) => {
@@ -128,7 +152,7 @@ function SongsTabPanel() {
           height={listHeight}
           itemCount={filteredAudioFiles.length}
           width={300}
-          itemData={filteredAudioFiles}
+          itemData={virtualListData}
         >
           {CustomListItem}
         </StyledFixedSizeList>}
