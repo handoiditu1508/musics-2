@@ -1,3 +1,6 @@
+import { formatSeconds } from "@/common/formats";
+import { useAppSelector } from "@/hooks";
+import { selectSelectedAudioFile } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -11,12 +14,11 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import { Box, Checkbox, IconButton, Slider, Tooltip, Typography, sliderClasses, useTheme } from "@mui/material";
 import { useState } from "react";
 
-console.log(sliderClasses.active);
-
 function AudioPlayer() {
   const theme = useTheme();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const playButtonTitle = isPlaying ? "Pause" : "Play";
+  const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
 
   return (
     <Box sx={{
@@ -95,7 +97,7 @@ function AudioPlayer() {
             },
           }}
         />
-        <Typography variant="caption">5:10</Typography>
+        <Typography variant="caption">{selectedAudioFile ? formatSeconds(selectedAudioFile.duration) : "-:--"}</Typography>
       </Box>
     </Box>
   );

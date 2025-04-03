@@ -1,4 +1,5 @@
 import { useAppSelector } from "@/hooks";
+import { selectSelectedAudioFile } from "@/redux/slices/audioFileSlice";
 import { selectBottomHeight } from "@/redux/slices/secondLayoutSlice";
 import { Box, Paper, Tooltip, Typography, useTheme } from "@mui/material";
 import AudioPlayer from "./AudioPlayer";
@@ -7,6 +8,8 @@ import MiscellaneousOptions from "./MiscellaneousOptions";
 function Bottombar() {
   const theme = useTheme();
   const bottomHeight = useAppSelector(selectBottomHeight);
+  const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
+  const artistsText = selectedAudioFile ? selectedAudioFile.artists.join(", ") : "";
 
   return (
     <Paper
@@ -30,10 +33,12 @@ function Bottombar() {
         flexBasis: 300,
         width: 300,
       }}>
-        <Typography variant="body1">Song Name</Typography>
-        <Tooltip title="Artist 1, Artist 2, Artist 3, Artist 4, Artist 5, Artist 6, Artist 7" placement="top">
-          <Typography variant="body2" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">Artist 1, Artist 2, Artist 3, Artist 4, Artist 5, Artist 6, Artist 7</Typography>
-        </Tooltip>
+        {selectedAudioFile && <>
+          <Typography variant="body1">{selectedAudioFile.title}</Typography>
+          <Tooltip title={artistsText} placement="top">
+            <Typography variant="body2" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">{artistsText}</Typography>
+          </Tooltip>
+        </>}
       </Box>
       <AudioPlayer />
       <MiscellaneousOptions />

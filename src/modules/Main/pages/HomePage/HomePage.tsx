@@ -1,3 +1,6 @@
+import { formatBytes, formatSeconds } from "@/common/formats";
+import { useAppSelector } from "@/hooks";
+import { selectSelectedAudioFile } from "@/redux/slices/audioFileSlice";
 import { styled, Typography } from "@mui/material";
 
 const StyledTable = styled("table")(({ theme }) => ({
@@ -8,20 +11,26 @@ const StyledTable = styled("table")(({ theme }) => ({
 }));
 
 function HomePage() {
+  const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
+
   return (
-    <StyledTable>
-      <tr>
-        <td><Typography>File Name.mp3</Typography></td>
-        <td><Typography variant="body2">5Mb</Typography></td>
-      </tr>
-      <tr>
-        <td><Typography>Song Name</Typography></td>
-        <td><Typography variant="body2">5:10</Typography></td>
-      </tr>
-      <tr>
-        <td><Typography>Artist 1, Artist 2, Artist 3, Artist 4, Artist 5, Artist 6, Artist 7</Typography></td>
-      </tr>
-    </StyledTable>
+    selectedAudioFile && (
+      <StyledTable>
+        <tbody>
+          <tr>
+            <td><Typography>{selectedAudioFile.name}</Typography></td>
+            <td><Typography variant="body2">{formatBytes(selectedAudioFile.size)}</Typography></td>
+          </tr>
+          <tr>
+            <td><Typography>{selectedAudioFile.title}</Typography></td>
+            <td><Typography variant="body2">{formatSeconds(selectedAudioFile.duration)}</Typography></td>
+          </tr>
+          <tr>
+            <td><Typography>{selectedAudioFile.artists.join(", ")}</Typography></td>
+          </tr>
+        </tbody>
+      </StyledTable>
+    )
   );
 }
 
