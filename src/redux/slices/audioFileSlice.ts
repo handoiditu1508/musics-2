@@ -22,7 +22,7 @@ export const audioFilesSlice = createSlice({
   name: "audioFiles",
   initialState: initialState,
   reducers: {
-    setAudioFiles: (state, action: PayloadAction<AudioFile[]>) => {
+    updateAudioFiles: (state, action: PayloadAction<AudioFile[]>) => {
       audioFilesAdapter.setAll(state, action.payload);
       state.queriedAudioFiles = action.payload;
       queryAudioFiles(state);
@@ -34,17 +34,17 @@ export const audioFilesSlice = createSlice({
       // order by alphabet
       state.artists = state.artists.sort();
     },
-    setSelectedAudioFileId: (state, action: PayloadAction<number>) => {
+    updateSelectedAudioFileId: (state, action: PayloadAction<number>) => {
       if (state.entities[action.payload]) {
         state.selectedId = action.payload;
       }
     },
-    setQuery: (state, action: PayloadAction<string>) => {
+    updateQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
       state.queriedAudioFiles = state.ids.map((id) => state.entities[id]);
       queryAudioFiles(state);
     },
-    setArtistQuery: (state, action: PayloadAction<string>) => {
+    updateArtistQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload.includes(" ") ? `artist:"${action.payload}"` : `artist:${action.payload}`;
       state.queriedAudioFiles = state.ids.map((id) => state.entities[id]);
       queryAudioFiles(state);
@@ -79,10 +79,10 @@ const queryAudioFiles = (state: AudioFilesState) => {
 };
 
 export const {
-  setAudioFiles,
-  setSelectedAudioFileId,
-  setQuery,
-  setArtistQuery,
+  updateAudioFiles,
+  updateSelectedAudioFileId,
+  updateQuery,
+  updateArtistQuery,
 } = audioFilesSlice.actions;
 
 const audioFilesSelectors = audioFilesAdapter.getSelectors<RootState>((state) => state.audioFiles);

@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
-import { selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, setQuery, setSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
+import { selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, updateQuery, updateSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
@@ -43,7 +43,7 @@ function CustomListItem(props: ListChildComponentProps) {
     <ListItem key={audioFile.id} style={style} dense>
       <ListItemButton
         selected={selectedId === audioFile.id}
-        onClick={() => dispatch(setSelectedAudioFileId(audioFile.id))}>
+        onClick={() => dispatch(updateSelectedAudioFileId(audioFile.id))}>
         <Tooltip title={audioFile.name} placement="right" arrow>
           <ListItemText
             primary={itemText}
@@ -75,7 +75,7 @@ function SongsTabPanel() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(setQuery(deferredSearchValue));
+    dispatch(updateQuery(deferredSearchValue));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deferredSearchValue]);
 

@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
-import { selectArtists, setArtistQuery } from "@/redux/slices/audioFileSlice";
+import { selectArtists, updateArtistQuery } from "@/redux/slices/audioFileSlice";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
@@ -45,7 +45,7 @@ function CustomListItem(props: ListChildComponentProps<VirtualListType>) {
   return (
     <ListItem key={artist} style={style} dense>
       <ListItemButton
-        onClick={() => dispatch(setArtistQuery(artist))}>
+        onClick={() => dispatch(updateArtistQuery(artist))}>
         <Tooltip title={artist} placement="right" arrow>
           <ListItemText
             primary={itemText}
