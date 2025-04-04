@@ -1,3 +1,4 @@
+import CONFIG from "@/configs";
 import AudioFile from "@/models/entities/AudioFile";
 import { createEntityAdapter, createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
@@ -8,13 +9,16 @@ export type AudioFilesState = EntityState<AudioFile, number> & {
   selectedId?: number;
   query: string;
   queriedAudioFiles: AudioFile[];
+  orderedIds: number[];
   artists: string[];
 };
 
 const initialState: AudioFilesState = {
   ...audioFilesAdapter.getInitialState(),
+  ids: CONFIG.EMPTY_ARRAY,
   query: "",
   queriedAudioFiles: [],
+  orderedIds: CONFIG.EMPTY_ARRAY,
   artists: [],
 };
 
@@ -33,6 +37,9 @@ export const audioFilesSlice = createSlice({
       state.artists = [...new Set(state.artists)];
       // order by alphabet
       state.artists = state.artists.sort();
+
+      // set audioFileOrderedIds
+      state.orderedIds = state.ids;
     },
     updateSelectedAudioFileId: (state, action: PayloadAction<number>) => {
       if (state.entities[action.payload]) {
@@ -41,12 +48,32 @@ export const audioFilesSlice = createSlice({
     },
     updateQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
-      state.queriedAudioFiles = state.ids.map((id) => state.entities[id]);
+      state.queriedAudioFiles = state.orderedIds.map((id) => state.entities[id]);
       queryAudioFiles(state);
     },
     updateArtistQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload.includes(" ") ? `artist:"${action.payload}"` : `artist:${action.payload}`;
-      state.queriedAudioFiles = state.ids.map((id) => state.entities[id]);
+      state.queriedAudioFiles = state.orderedIds.map((id) => state.entities[id]);
+      queryAudioFiles(state);
+    },
+    shuffleAudioFiles: (state) => {
+      // using the Fisher-Yates shuffle
+      for (let i = state.orderedIds.length - 1; i > 0; i--) {
+        // Generate random index
+        const j = Math.floor(Math.random() * (i + 1));
+
+        // Swap elements at indices i and j
+        const temp = state.orderedIds[i];
+        state.orderedIds[i] = state.orderedIds[j];
+        state.orderedIds[j] = temp;
+      }
+
+      state.queriedAudioFiles = state.orderedIds.map((id) => state.entities[id]);
+      queryAudioFiles(state);
+    },
+    unShuffleAudioFiles: (state) => {
+      state.orderedIds = state.ids;
+      state.queriedAudioFiles = state.orderedIds.map((id) => state.entities[id]);
       queryAudioFiles(state);
     },
   },
@@ -83,6 +110,8 @@ export const {
   updateSelectedAudioFileId,
   updateQuery,
   updateArtistQuery,
+  shuffleAudioFiles,
+  unShuffleAudioFiles,
 } = audioFilesSlice.actions;
 
 const audioFilesSelectors = audioFilesAdapter.getSelectors<RootState>((state) => state.audioFiles);
@@ -96,3 +125,4 @@ export const selectSelectedAudioFile = (state: RootState) => (state.audioFiles.s
 export const selectQuery = (state: RootState) => state.audioFiles.query;
 export const selectQueriedAudioFiles = (state: RootState) => state.audioFiles.queriedAudioFiles;
 export const selectArtists = (state: RootState) => state.audioFiles.artists;
+export const selectIsAudioFilesShuffled = (state: RootState) => state.audioFiles.ids !== state.audioFiles.orderedIds;

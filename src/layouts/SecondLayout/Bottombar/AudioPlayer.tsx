@@ -1,6 +1,6 @@
 import { formatSeconds } from "@/common/formats";
-import { useAppSelector } from "@/hooks";
-import { selectSelectedAudioFile } from "@/redux/slices/audioFileSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { selectIsAudioFilesShuffled, selectSelectedAudioFile, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -19,6 +19,16 @@ function AudioPlayer() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const playButtonTitle = isPlaying ? "Pause" : "Play";
   const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
+  const isShuffled = useAppSelector(selectIsAudioFilesShuffled);
+  const dispatch = useAppDispatch();
+
+  const handleShuffleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    if (!checked) {
+      dispatch(unShuffleAudioFiles());
+    } else {
+      dispatch(shuffleAudioFiles());
+    }
+  };
 
   return (
     <Box sx={{
@@ -37,6 +47,8 @@ function AudioPlayer() {
             inputProps={{ "aria-label": "Shuffle" }}
             icon={<ShuffleIcon />}
             checkedIcon={<ShuffleOnIcon />}
+            checked={isShuffled}
+            onChange={handleShuffleChange}
           />
         </Tooltip>
         <Tooltip title="Previous" placement="top">
