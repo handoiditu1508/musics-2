@@ -1,10 +1,9 @@
 import FaSvgIcon from "@/components/FaSvgIcon";
-import { useAppSelector } from "@/hooks";
-import { selectBottomHeight } from "@/redux/slices/secondLayoutSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { selectBottomHeight, selectTabValue, updateTabValue } from "@/redux/slices/secondLayoutSlice";
 import { faFaceKissWinkHeart } from "@fortawesome/free-solid-svg-icons/faFaceKissWinkHeart";
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
 import { Box, Tab, TabProps, Tabs } from "@mui/material";
-import { useState } from "react";
 import ArtistsTabPanel from "./ArtistsTabPanel";
 import SongsTabPanel from "./SongsTabPanel";
 
@@ -37,11 +36,12 @@ const tabItems: TabItem[] = [
 ];
 
 function SidebarTabs() {
-  const [tabValue, setTabValue] = useState(0);
+  const tabValue = useAppSelector(selectTabValue);
   const bottomHeight = useAppSelector(selectBottomHeight);
+  const dispatch = useAppDispatch();
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
+    dispatch(updateTabValue(newValue));
   };
 
   return (
