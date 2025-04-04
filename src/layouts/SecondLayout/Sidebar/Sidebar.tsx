@@ -35,19 +35,35 @@ function Sidebar() {
         ...togglingCss,
         position: "relative",
         paddingBottom: `${bottomHeight}px`,
+        ":hover": {
+          ".toggle-sidebar-btn": {
+            opacity: 1,
+          },
+        },
       }}>
       <IconButton
         size="small"
-        sx={{
-          position: "absolute",
-          right: open ? -14 : -17,
-          top: 150,
-          zIndex: theme.zIndex.drawer + 1,
-          backgroundColor: `rgba(${theme.palette.background.defaultChannel} / 0.5)`,
-          ":hover": {
-            backgroundColor: `rgba(${theme.palette.background.defaultChannel} / 0.7)`,
+        className="toggle-sidebar-btn"
+        sx={[
+          {
+            position: "absolute",
+            right: -17,
+            top: 150,
+            zIndex: theme.zIndex.drawer + 1,
+            transition: theme.transitions.create(["background-color", "opacity"], {
+              duration: theme.transitions.duration.shortest,
+              easing: theme.transitions.easing.easeInOut,
+            }),
+            backgroundColor: `rgba(${theme.palette.background.defaultChannel} / 0.5)`,
+            ":hover": {
+              backgroundColor: `rgba(${theme.palette.background.defaultChannel} / 0.7)`,
+            },
           },
-        }}
+          (open && {
+            opacity: 0,
+            right: -14,
+          }),
+        ]}
         onClick={() => dispatch(toggleSidebar())}>
         <ChevronRightIcon
           fontSize="inherit"
