@@ -22,6 +22,10 @@ export const audioFilesSlice = createSlice({
   reducers: {
     setAudioFiles: (state, action: PayloadAction<AudioFile[]>) => {
       audioFilesAdapter.setAll(state, action.payload);
+      state.queriedAudioFiles = action.payload;
+      if (state.query) {
+        state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(state.query));
+      }
     },
     setSelectedAudioFileId: (state, action: PayloadAction<number>) => {
       if (state.entities[action.payload]) {
@@ -30,9 +34,10 @@ export const audioFilesSlice = createSlice({
     },
     setQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
-      state.queriedAudioFiles = state.ids
-        .map((id) => state.entities[id])
-        .filter((audioFile) => audioFile.name.toLowerCase().includes(state.query));
+      state.queriedAudioFiles = state.ids.map((id) => state.entities[id]);
+      if (state.query) {
+        state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(state.query));
+      }
     },
   },
 });
