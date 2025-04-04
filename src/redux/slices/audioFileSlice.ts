@@ -8,12 +8,14 @@ export type AudioFilesState = EntityState<AudioFile, number> & {
   selectedId?: number;
   query: string;
   queriedAudioFiles: AudioFile[];
+  artists: string[];
 };
 
 const initialState: AudioFilesState = {
   ...audioFilesAdapter.getInitialState(),
   query: "",
   queriedAudioFiles: [],
+  artists: [],
 };
 
 export const audioFilesSlice = createSlice({
@@ -24,6 +26,13 @@ export const audioFilesSlice = createSlice({
       audioFilesAdapter.setAll(state, action.payload);
       state.queriedAudioFiles = action.payload;
       queryAudioFiles(state);
+
+      // set artists
+      state.artists = action.payload.flatMap((audioFile) => audioFile.artists);
+      // remove duplicate artists
+      state.artists = [...new Set(state.artists)];
+      // order by alphabet
+      state.artists = state.artists.sort();
     },
     setSelectedAudioFileId: (state, action: PayloadAction<number>) => {
       if (state.entities[action.payload]) {
@@ -32,6 +41,11 @@ export const audioFilesSlice = createSlice({
     },
     setQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
+      state.queriedAudioFiles = state.ids.map((id) => state.entities[id]);
+      queryAudioFiles(state);
+    },
+    setArtistQuery: (state, action: PayloadAction<string>) => {
+      state.query = action.payload.includes(" ") ? `artist:"${action.payload}"` : `artist:${action.payload}`;
       state.queriedAudioFiles = state.ids.map((id) => state.entities[id]);
       queryAudioFiles(state);
     },
@@ -67,6 +81,7 @@ export const {
   setAudioFiles,
   setSelectedAudioFileId,
   setQuery,
+  setArtistQuery,
 } = audioFilesSlice.actions;
 
 const audioFilesSelectors = audioFilesAdapter.getSelectors<RootState>((state) => state.audioFiles);
@@ -79,3 +94,4 @@ export const selectSelectedAudioFileId = (state: RootState) => state.audioFiles.
 export const selectSelectedAudioFile = (state: RootState) => (state.audioFiles.selectedId ? audioFilesSelectors.selectById(state, state.audioFiles.selectedId) : undefined);
 export const selectQuery = (state: RootState) => state.audioFiles.query;
 export const selectQueriedAudioFiles = (state: RootState) => state.audioFiles.queriedAudioFiles;
+export const selectArtists = (state: RootState) => state.audioFiles.artists;
