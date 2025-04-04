@@ -86,7 +86,7 @@ function SidebarTabs() {
             flex: 1,
             overflowY: "hidden",
           }}>
-          {tabValue === item.id && item.tabPanel}
+          {item.tabPanel}
         </Box>
       ))}
     </Box>
