@@ -23,9 +23,7 @@ export const audioFilesSlice = createSlice({
     setAudioFiles: (state, action: PayloadAction<AudioFile[]>) => {
       audioFilesAdapter.setAll(state, action.payload);
       state.queriedAudioFiles = action.payload;
-      if (state.query) {
-        state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(state.query));
-      }
+      queryAudioFiles(state);
     },
     setSelectedAudioFileId: (state, action: PayloadAction<number>) => {
       if (state.entities[action.payload]) {
@@ -35,12 +33,35 @@ export const audioFilesSlice = createSlice({
     setQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
       state.queriedAudioFiles = state.ids.map((id) => state.entities[id]);
-      if (state.query) {
-        state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(state.query));
-      }
+      queryAudioFiles(state);
     },
   },
 });
+
+/**
+ * `artist:tom` => `tom`, `artist:"tom jerry"` => `tom jerry`, `artist:tom jerry` => `tom`
+ */
+const extractQueriedArtist = (query: string): string | null => {
+  const match = query.match(/artist:"([^"]+)"|artist:([^"\s]+)/);
+  if (match) {
+    return match[1] || match[2];
+  }
+
+  return null;
+};
+
+const queryAudioFiles = (state: AudioFilesState) => {
+  if (state.query) {
+    let queriedArtist = extractQueriedArtist(state.query);
+
+    if (queriedArtist) {
+      queriedArtist = queriedArtist.toLowerCase();
+      state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.artists.some((artist) => artist.toLowerCase() === queriedArtist));
+    } else {
+      state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(state.query));
+    }
+  }
+};
 
 export const {
   setAudioFiles,
