@@ -1,29 +1,32 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
-import { selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, setQuery, setSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
+import { selectArtists, setArtistQuery } from "@/redux/slices/audioFileSlice";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { ChangeEventHandler, ReactNode, useDeferredValue, useEffect, useRef, useState } from "react";
+import { ChangeEventHandler, ReactNode, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 
-const StyledFixedSizeList = styled(FixedSizeList)(({ theme }) => theme.mixins.scrollbar);
+type VirtualListType = {
+  artistQuery: string;
+  artists: string[];
+};
 
-function CustomListItem(props: ListChildComponentProps) {
+const StyledFixedSizeList = styled(FixedSizeList<VirtualListType>)(({ theme }) => theme.mixins.scrollbar);
+
+function CustomListItem(props: ListChildComponentProps<VirtualListType>) {
   const theme = useTheme();
-  const { index, style } = props;
-  const audioFiles = useAppSelector(selectQueriedAudioFiles);
-  const audioFile = audioFiles[index];
-  const query = useAppSelector(selectQuery);
-  const selectedId = useAppSelector(selectSelectedAudioFileId);
+  const { index, style, data } = props;
+  const artist = data.artists[index];
+  const query = data.artistQuery;
   const dispatch = useAppDispatch();
-  let itemText: ReactNode = audioFile.name;
+  let itemText: ReactNode = artist;
 
   if (query) {
-    const matches = match(audioFile.name, query, { insideWords: true, findAllOccurrences: true });
-    const parts = parse(audioFile.name, matches);
+    const matches = match(artist, query, { insideWords: true, findAllOccurrences: true });
+    const parts = parse(artist, matches);
     itemText = parts.map((part, index) => (
       <Box
         key={index}
@@ -40,11 +43,10 @@ function CustomListItem(props: ListChildComponentProps) {
   }
 
   return (
-    <ListItem key={audioFile.id} style={style} dense>
+    <ListItem key={artist} style={style} dense>
       <ListItemButton
-        selected={selectedId === audioFile.id}
-        onClick={() => dispatch(setSelectedAudioFileId(audioFile.id))}>
-        <Tooltip title={audioFile.name} placement="right" arrow>
+        onClick={() => dispatch(setArtistQuery(artist))}>
+        <Tooltip title={artist} placement="right" arrow>
           <ListItemText
             primary={itemText}
             slotProps={{
@@ -62,30 +64,17 @@ function CustomListItem(props: ListChildComponentProps) {
   );
 }
 
-function SongsTabPanel() {
+function ArtistsTabPanel() {
   const theme = useTheme();
-  const query = useAppSelector(selectQuery);
-  const [searchValue, setSearchValue] = useState<string>(query);
+  const [searchValue, setSearchValue] = useState<string>("");
   const deferredSearchValue = useDeferredValue(searchValue);
   const [listHeight, setListHeight] = useState<number>(0);
   const listRef = useRef<HTMLDivElement>(null);
   const listSizeObserver = useRef<ResizeObserver>(null);
   const { isFetching, isError } = useGetAudioFilesQuery();
-  const filteredAudioFiles = useAppSelector(selectQueriedAudioFiles);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(setQuery(deferredSearchValue));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deferredSearchValue]);
-
-  useEffect(() => {
-    // handle update query from outside
-    if (query !== deferredSearchValue) {
-      setSearchValue(query);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+  const artists = useAppSelector(selectArtists);
+  const lowerCaseSearchValue = deferredSearchValue.toLowerCase();
+  const queriedArtists = useMemo(() => lowerCaseSearchValue ? artists.filter((artist) => artist.toLowerCase().includes(lowerCaseSearchValue)) : artists, [artists, lowerCaseSearchValue]);
 
   useEffect(() => {
     listSizeObserver.current = new ResizeObserver((entries) => {
@@ -153,18 +142,22 @@ function SongsTabPanel() {
         {/* todo: skeleton, error, empty */}
         {isFetching && <Box>Skeleton</Box>}
         {!isFetching && isError && <Box>Error</Box>}
-        {!isFetching && !isError && !!filteredAudioFiles.length && <StyledFixedSizeList
+        {!isFetching && !isError && !!queriedArtists.length && <StyledFixedSizeList
           itemSize={36.016}
           height={listHeight}
-          itemCount={filteredAudioFiles.length}
+          itemCount={queriedArtists.length}
           width={300}
+          itemData={{
+            artistQuery: deferredSearchValue,
+            artists: queriedArtists,
+          }}
         >
           {CustomListItem}
         </StyledFixedSizeList>}
-        {!isFetching && !isError && !filteredAudioFiles.length && <Box>Empty</Box>}
+        {!isFetching && !isError && !queriedArtists.length && <Box>Empty</Box>}
       </Box>
     </Box>
   );
 }
 
-export default SongsTabPanel;
+export default ArtistsTabPanel;

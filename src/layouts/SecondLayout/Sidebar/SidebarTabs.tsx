@@ -5,6 +5,7 @@ import { faFaceKissWinkHeart } from "@fortawesome/free-solid-svg-icons/faFaceKis
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
 import { Box, Tab, TabProps, Tabs } from "@mui/material";
 import { useState } from "react";
+import ArtistsTabPanel from "./ArtistsTabPanel";
 import SongsTabPanel from "./SongsTabPanel";
 
 type TabItem = {
@@ -31,7 +32,7 @@ const tabItems: TabItem[] = [
     tabPanelId: "sidebar-tabpanel-1",
     icon: <FaSvgIcon icon={faFaceKissWinkHeart} />,
     iconPosition: "end",
-    tabPanel: <Box>Artists</Box>,
+    tabPanel: <ArtistsTabPanel />,
   },
 ];
 

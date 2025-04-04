@@ -72,7 +72,8 @@ const queryAudioFiles = (state: AudioFilesState) => {
       queriedArtist = queriedArtist.toLowerCase();
       state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.artists.some((artist) => artist.toLowerCase() === queriedArtist));
     } else {
-      state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(state.query));
+      const query = state.query.toLowerCase();
+      state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(query));
     }
   }
 };
