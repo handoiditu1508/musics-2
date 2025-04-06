@@ -20,6 +20,7 @@ function AudioPlayer() {
   const playButtonTitle = isPlaying ? "Pause" : "Play";
   const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
   const isShuffled = useAppSelector(selectIsAudioFilesShuffled);
+  const audioDuration = selectedAudioFile ? selectedAudioFile.duration : 0;
   const dispatch = useAppDispatch();
 
   const handleShuffleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -93,7 +94,8 @@ function AudioPlayer() {
         <Slider
           aria-label="Music player"
           valueLabelDisplay="auto"
-          // todo: valueLabelFormat
+          max={audioDuration}
+          valueLabelFormat={formatSeconds}
           sx={{
             [`.${sliderClasses.thumb}`]: {
               width: 8,
@@ -109,7 +111,7 @@ function AudioPlayer() {
             },
           }}
         />
-        <Typography variant="caption">{selectedAudioFile ? formatSeconds(selectedAudioFile.duration) : "-:--"}</Typography>
+        <Typography variant="caption">{formatSeconds(audioDuration)}</Typography>
       </Box>
     </Box>
   );
