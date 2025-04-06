@@ -3,7 +3,7 @@ import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
 import { selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, updateQuery, updateSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, IconButton, InputAdornment, ListItem, ListItemButton, ListItemText, styled, TextField, Tooltip, useTheme } from "@mui/material";
+import { Box, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemText, Skeleton, styled, TextField, Tooltip, useTheme } from "@mui/material";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import { ChangeEventHandler, ReactNode, useDeferredValue, useEffect, useRef, useState } from "react";
@@ -151,7 +151,17 @@ function SongsTabPanel() {
           ...theme.mixins.scrollbar,
         }}>
         {/* todo: skeleton, error, empty */}
-        {isFetching && <Box>Skeleton</Box>}
+        {isFetching && <List dense disablePadding>
+          {Array.from({ length: 30 }).map((_, index) => (
+            <Skeleton key={index} variant="rectangular" width="100%" sx={{ marginTop: 1 }}>
+              <ListItem>
+                <ListItemText
+                  primary="."
+                />
+              </ListItem>
+            </Skeleton>
+          ))}
+        </List>}
         {!isFetching && isError && <Box>Error</Box>}
         {!isFetching && !isError && !!filteredAudioFiles.length && <StyledFixedSizeList
           itemSize={36.016}
