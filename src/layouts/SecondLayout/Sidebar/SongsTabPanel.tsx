@@ -2,8 +2,9 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
 import { selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, updateQuery, updateSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import ClearIcon from "@mui/icons-material/Clear";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemText, Skeleton, styled, TextField, Tooltip, useTheme } from "@mui/material";
+import { Box, Button, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemText, Skeleton, styled, TextField, Tooltip, Typography, useTheme } from "@mui/material";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import { ChangeEventHandler, ReactNode, useDeferredValue, useEffect, useRef, useState } from "react";
@@ -70,7 +71,7 @@ function SongsTabPanel() {
   const [listHeight, setListHeight] = useState<number>(0);
   const listRef = useRef<HTMLDivElement>(null);
   const listSizeObserver = useRef<ResizeObserver>(null);
-  const { isFetching, isError } = useGetAudioFilesQuery();
+  const { isFetching, isError, refetch } = useGetAudioFilesQuery();
   const filteredAudioFiles = useAppSelector(selectQueriedAudioFiles);
   const dispatch = useAppDispatch();
 
@@ -162,7 +163,18 @@ function SongsTabPanel() {
             </Skeleton>
           ))}
         </List>}
-        {!isFetching && isError && <Box>Error</Box>}
+        {!isFetching && isError && <Box sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}>
+          <Typography>Error loading audio files!</Typography>
+          <Button variant="text" startIcon={<RefreshIcon />} onClick={refetch}>
+            Reload
+          </Button>
+        </Box>}
         {!isFetching && !isError && !!filteredAudioFiles.length && <StyledFixedSizeList
           itemSize={36.016}
           height={listHeight}
