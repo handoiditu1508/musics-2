@@ -151,7 +151,6 @@ function SongsTabPanel() {
           overflowY: "auto",
           ...theme.mixins.scrollbar,
         }}>
-        {/* todo: skeleton, error, empty */}
         {isFetching && <List dense disablePadding>
           {Array.from({ length: 30 }).map((_, index) => (
             <Skeleton key={index} variant="rectangular" width="100%" sx={{ marginTop: 1 }}>
@@ -183,7 +182,18 @@ function SongsTabPanel() {
         >
           {CustomListItem}
         </StyledFixedSizeList>}
-        {!isFetching && !isError && !filteredAudioFiles.length && <Box>Empty</Box>}
+        {!isFetching && !isError && !filteredAudioFiles.length && <Box sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}>
+          <Typography>No song found!</Typography>
+          <Button variant="text" startIcon={<RefreshIcon />} onClick={refetch}>
+            Retry
+          </Button>
+        </Box>}
       </Box>
     </Box>
   );

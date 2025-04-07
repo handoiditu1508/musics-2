@@ -146,7 +146,6 @@ function ArtistsTabPanel() {
           overflowY: "auto",
           ...theme.mixins.scrollbar,
         }}>
-        {/* todo: skeleton, error, empty */}
         {isFetching && <List dense disablePadding>
           {Array.from({ length: 30 }).map((_, index) => (
             <Skeleton key={index} variant="rectangular" width="100%" sx={{ marginTop: 1 }}>
@@ -182,7 +181,15 @@ function ArtistsTabPanel() {
         >
           {CustomListItem}
         </StyledFixedSizeList>}
-        {!isFetching && !isError && !queriedArtists.length && <Box>Empty</Box>}
+        {!isFetching && !isError && !queriedArtists.length && <Box sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}>
+          <Typography>No artist found!</Typography>
+        </Box>}
       </Box>
     </Box>
   );
