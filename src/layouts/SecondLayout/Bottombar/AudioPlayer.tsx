@@ -1,6 +1,6 @@
 import { formatSeconds } from "@/common/formats";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { selectIsAudioFilesShuffled, selectSelectedAudioFile, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { nextAudio, selectIsAudioFilesShuffled, selectIsAutoPlay, selectSelectedAudioFile, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -14,6 +14,12 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import { Box, Checkbox, IconButton, Slider, Tooltip, Typography, sliderClasses, useTheme } from "@mui/material";
 import { CSSProperties, MouseEventHandler, ReactEventHandler, useEffect, useRef, useState } from "react";
 
+const handlePlayAbortError = (error: Error) => {
+  if (error.name !== "AbortError") {
+    console.error(error);
+  }
+};
+
 function AudioPlayer() {
   const theme = useTheme();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -24,6 +30,7 @@ function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>({} as HTMLAudioElement);
   const [currentTime, setCurrentTime] = useState(0);
   const [bufferedTime, setBufferedTime] = useState(0);
+  const isAutoPlay = useAppSelector(selectIsAutoPlay);
   const dispatch = useAppDispatch();
 
   const handleShuffleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -37,7 +44,7 @@ function AudioPlayer() {
   const handleClickPlayButton: MouseEventHandler<HTMLButtonElement> = () => {
     if (audioRef.current.paused) {
       if (audioRef.current.currentSrc) {
-        audioRef.current.play();
+        audioRef.current.play().catch(handlePlayAbortError);
       }
     } else {
       audioRef.current.pause();
@@ -57,7 +64,15 @@ function AudioPlayer() {
   };
 
   const handleProgress: ReactEventHandler<HTMLAudioElement> = () => {
-    setBufferedTime(audioRef.current.buffered.end(audioRef.current.buffered.length - 1));
+    if (audioRef.current.buffered.length) {
+      setBufferedTime(audioRef.current.buffered.end(audioRef.current.buffered.length - 1));
+    }
+  };
+
+  const handleEnded: ReactEventHandler<HTMLAudioElement> = () => {
+    if (isAutoPlay) {
+      dispatch(nextAudio());
+    }
   };
 
   const handleSliderChange = (_event: Event, value: number | number[], _activeThumb: number) => {
@@ -69,7 +84,7 @@ function AudioPlayer() {
     if (selectedAudioFile) {
       setCurrentTime(0);
       setBufferedTime(0);
-      audioRef.current.play();
+      audioRef.current.play().catch(handlePlayAbortError);
     } else {
       audioRef.current.pause();
     }
@@ -182,6 +197,7 @@ function AudioPlayer() {
           onPause={handlePause}
           onTimeUpdate={handleTimeUpdate}
           onProgress={handleProgress}
+          onEnded={handleEnded}
         />
       </Box>
     </Box>

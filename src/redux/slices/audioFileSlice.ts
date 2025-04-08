@@ -11,15 +11,17 @@ export type AudioFilesState = EntityState<AudioFile, number> & {
   queriedAudioFiles: AudioFile[];
   orderedIds: number[];
   artists: string[];
+  isAutoPlay: boolean;
 };
 
 const initialState: AudioFilesState = {
   ...audioFilesAdapter.getInitialState(),
   ids: CONFIG.EMPTY_ARRAY,
   query: "",
-  queriedAudioFiles: [],
+  queriedAudioFiles: CONFIG.EMPTY_ARRAY,
   orderedIds: CONFIG.EMPTY_ARRAY,
-  artists: [],
+  artists: CONFIG.EMPTY_ARRAY,
+  isAutoPlay: true,
 };
 
 export const audioFilesSlice = createSlice({
@@ -45,6 +47,38 @@ export const audioFilesSlice = createSlice({
       if (state.entities[action.payload]) {
         state.selectedId = action.payload;
       }
+    },
+    nextAudio: (state) => {
+      // empty list
+      if (state.orderedIds.length === 0) {
+        return;
+      }
+
+      // no id selected
+      if (state.selectedId === undefined) {
+        state.selectedId = state.orderedIds[0];
+
+        return;
+      }
+
+      const currentIndex = state.orderedIds.indexOf(state.selectedId);
+
+      // selected id not exist
+      if (currentIndex === -1) {
+        return;
+      }
+
+      // selected id is last in the list
+      if (currentIndex === state.orderedIds.length - 1) {
+        let isRepeat = true;
+        if (isRepeat) {
+          state.selectedId = state.orderedIds[0];
+        }
+
+        return;
+      }
+
+      state.selectedId = state.orderedIds[currentIndex + 1];
     },
     updateQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
@@ -75,6 +109,9 @@ export const audioFilesSlice = createSlice({
       state.orderedIds = state.ids;
       state.queriedAudioFiles = state.orderedIds.map((id) => state.entities[id]);
       queryAudioFiles(state);
+    },
+    setIsAutoPlay: (state, action: PayloadAction<boolean>) => {
+      state.isAutoPlay = action.payload;
     },
   },
 });
@@ -108,10 +145,12 @@ const queryAudioFiles = (state: AudioFilesState) => {
 export const {
   updateAudioFiles,
   updateSelectedAudioFileId,
+  nextAudio,
   updateQuery,
   updateArtistQuery,
   shuffleAudioFiles,
   unShuffleAudioFiles,
+  setIsAutoPlay,
 } = audioFilesSlice.actions;
 
 const audioFilesSelectors = audioFilesAdapter.getSelectors<RootState>((state) => state.audioFiles);
@@ -126,3 +165,4 @@ export const selectQuery = (state: RootState) => state.audioFiles.query;
 export const selectQueriedAudioFiles = (state: RootState) => state.audioFiles.queriedAudioFiles;
 export const selectArtists = (state: RootState) => state.audioFiles.artists;
 export const selectIsAudioFilesShuffled = (state: RootState) => state.audioFiles.ids !== state.audioFiles.orderedIds;
+export const selectIsAutoPlay = (state: RootState) => state.audioFiles.isAutoPlay;
