@@ -12,7 +12,7 @@ import ShuffleOnIcon from "@mui/icons-material/ShuffleOn";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import { Box, Checkbox, IconButton, Slider, Tooltip, Typography, sliderClasses, useTheme } from "@mui/material";
-import { useState } from "react";
+import { CSSProperties, MouseEventHandler, ReactEventHandler, useEffect, useRef, useState } from "react";
 
 function AudioPlayer() {
   const theme = useTheme();
@@ -21,6 +21,9 @@ function AudioPlayer() {
   const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
   const isShuffled = useAppSelector(selectIsAudioFilesShuffled);
   const audioDuration = selectedAudioFile ? selectedAudioFile.duration : 0;
+  const audioRef = useRef<HTMLAudioElement>({} as HTMLAudioElement);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [bufferedTime, setBufferedTime] = useState(0);
   const dispatch = useAppDispatch();
 
   const handleShuffleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -30,6 +33,47 @@ function AudioPlayer() {
       dispatch(shuffleAudioFiles());
     }
   };
+
+  const handleClickPlayButton: MouseEventHandler<HTMLButtonElement> = () => {
+    if (audioRef.current.paused) {
+      if (audioRef.current.currentSrc) {
+        audioRef.current.play();
+      }
+    } else {
+      audioRef.current.pause();
+    }
+  };
+
+  const handlePlay: ReactEventHandler<HTMLAudioElement> = () => {
+    setIsPlaying(true);
+  };
+
+  const handlePause: ReactEventHandler<HTMLAudioElement> = () => {
+    setIsPlaying(false);
+  };
+
+  const handleTimeUpdate: ReactEventHandler<HTMLAudioElement> = () => {
+    setCurrentTime(audioRef.current.currentTime);
+  };
+
+  const handleProgress: ReactEventHandler<HTMLAudioElement> = () => {
+    setBufferedTime(audioRef.current.buffered.end(audioRef.current.buffered.length - 1));
+  };
+
+  const handleSliderChange = (_event: Event, value: number | number[], _activeThumb: number) => {
+    audioRef.current.currentTime = value as number;
+  };
+
+  // handle song change
+  useEffect(() => {
+    if (selectedAudioFile) {
+      setCurrentTime(0);
+      setBufferedTime(0);
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+  }, [selectedAudioFile]);
 
   return (
     <Box sx={{
@@ -63,7 +107,7 @@ function AudioPlayer() {
           </IconButton>
         </Tooltip>
         <Tooltip title={playButtonTitle} placement="top">
-          <IconButton aria-label={playButtonTitle} color="primary" size="large" onClick={() => setIsPlaying(!isPlaying)}>
+          <IconButton aria-label={playButtonTitle} color="primary" size="large" onClick={handleClickPlayButton}>
             {isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
           </IconButton>
         </Tooltip>
@@ -90,13 +134,30 @@ function AudioPlayer() {
         alignItems: "center",
         gap: 1,
       }}>
-        <Typography variant="caption">2:30</Typography>
+        <Typography variant="caption">{formatSeconds(currentTime)}</Typography>
         <Slider
           aria-label="Music player"
           valueLabelDisplay="auto"
+          value={currentTime}
           max={audioDuration}
           valueLabelFormat={formatSeconds}
+          style={{
+            "--bufferedPercent": `${bufferedTime * 100 / audioDuration}%`,
+          } as CSSProperties}
           sx={{
+            [`.${sliderClasses.rail}`]: {
+              backgroundColor: theme.palette.Slider.primaryTrack,
+              "::before": {
+                height: "inherit",
+                position: "absolute",
+                top: "inherit",
+                content: '""',
+                width: "var(--bufferedPercent)",
+                borderRadius: "inherit",
+                transform: "inherit",
+                backgroundColor: theme.palette.primary.main,
+              },
+            },
             [`.${sliderClasses.thumb}`]: {
               width: 8,
               height: 8,
@@ -110,8 +171,18 @@ function AudioPlayer() {
               },
             },
           }}
+          onChange={handleSliderChange}
         />
         <Typography variant="caption">{formatSeconds(audioDuration)}</Typography>
+        <audio
+          ref={audioRef}
+          src={selectedAudioFile ? selectedAudioFile.path : undefined}
+          style={{ display: "none" }}
+          onPlay={handlePlay}
+          onPause={handlePause}
+          onTimeUpdate={handleTimeUpdate}
+          onProgress={handleProgress}
+        />
       </Box>
     </Box>
   );
