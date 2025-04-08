@@ -87,6 +87,14 @@ function AudioPlayer() {
     dispatch(previousAudio());
   };
 
+  const handleReplayButtonClick = () => {
+    audioRef.current.currentTime = Math.max(audioRef.current.currentTime - 10, 0);
+  };
+
+  const handleForwardButtonClick = () => {
+    audioRef.current.currentTime = Math.min(audioRef.current.currentTime + 10, audioDuration);
+  };
+
   // handle song change
   useEffect(() => {
     if (selectedAudioFile) {
@@ -125,7 +133,7 @@ function AudioPlayer() {
           </IconButton>
         </Tooltip>
         <Tooltip title="Replay 10 seconds" placement="top">
-          <IconButton aria-label="Replay 10 seconds">
+          <IconButton aria-label="Replay 10 seconds" onClick={handleReplayButtonClick}>
             <Replay10Icon />
           </IconButton>
         </Tooltip>
@@ -135,7 +143,7 @@ function AudioPlayer() {
           </IconButton>
         </Tooltip>
         <Tooltip title="Forward 10 seconds" placement="top">
-          <IconButton aria-label="Forward 10 seconds">
+          <IconButton aria-label="Forward 10 seconds" onClick={handleForwardButtonClick}>
             <Forward10Icon />
           </IconButton>
         </Tooltip>
