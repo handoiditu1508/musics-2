@@ -1,6 +1,6 @@
 import { formatSeconds } from "@/common/formats";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { nextAudio, selectIsAudioFilesShuffled, selectIsAutoPlay, selectSelectedAudioFile, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { nextAudio, previousAudio, selectIsAudioFilesShuffled, selectIsAutoPlay, selectSelectedAudioFile, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -41,7 +41,7 @@ function AudioPlayer() {
     }
   };
 
-  const handleClickPlayButton: MouseEventHandler<HTMLButtonElement> = () => {
+  const handlePlayButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (audioRef.current.paused) {
       if (audioRef.current.currentSrc) {
         audioRef.current.play().catch(handlePlayAbortError);
@@ -79,6 +79,14 @@ function AudioPlayer() {
     audioRef.current.currentTime = value as number;
   };
 
+  const handleNextButtonClick = () => {
+    dispatch(nextAudio());
+  };
+
+  const handlePreviousButtonClick = () => {
+    dispatch(previousAudio());
+  };
+
   // handle song change
   useEffect(() => {
     if (selectedAudioFile) {
@@ -112,7 +120,7 @@ function AudioPlayer() {
           />
         </Tooltip>
         <Tooltip title="Previous" placement="top">
-          <IconButton aria-label="Previous">
+          <IconButton aria-label="Previous" onClick={handlePreviousButtonClick}>
             <SkipPreviousIcon />
           </IconButton>
         </Tooltip>
@@ -122,7 +130,7 @@ function AudioPlayer() {
           </IconButton>
         </Tooltip>
         <Tooltip title={playButtonTitle} placement="top">
-          <IconButton aria-label={playButtonTitle} color="primary" size="large" onClick={handleClickPlayButton}>
+          <IconButton aria-label={playButtonTitle} color="primary" size="large" onClick={handlePlayButtonClick}>
             {isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
           </IconButton>
         </Tooltip>
@@ -132,7 +140,7 @@ function AudioPlayer() {
           </IconButton>
         </Tooltip>
         <Tooltip title="Next" placement="top">
-          <IconButton aria-label="Next">
+          <IconButton aria-label="Next" onClick={handleNextButtonClick}>
             <SkipNextIcon />
           </IconButton>
         </Tooltip>

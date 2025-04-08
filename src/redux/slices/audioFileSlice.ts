@@ -80,6 +80,38 @@ export const audioFilesSlice = createSlice({
 
       state.selectedId = state.orderedIds[currentIndex + 1];
     },
+    previousAudio: (state) => {
+      // empty list
+      if (state.orderedIds.length === 0) {
+        return;
+      }
+
+      // no id selected
+      if (state.selectedId === undefined) {
+        state.selectedId = state.orderedIds.at(-1);
+
+        return;
+      }
+
+      const currentIndex = state.orderedIds.indexOf(state.selectedId);
+
+      // selected id not exist
+      if (currentIndex === -1) {
+        return;
+      }
+
+      // selected id is first in the list
+      if (currentIndex === 0) {
+        let isRepeat = true;
+        if (isRepeat) {
+          state.selectedId = state.orderedIds.at(-1);
+        }
+
+        return;
+      }
+
+      state.selectedId = state.orderedIds[currentIndex - 1];
+    },
     updateQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
       state.queriedAudioFiles = state.orderedIds.map((id) => state.entities[id]);
@@ -146,6 +178,7 @@ export const {
   updateAudioFiles,
   updateSelectedAudioFileId,
   nextAudio,
+  previousAudio,
   updateQuery,
   updateArtistQuery,
   shuffleAudioFiles,
