@@ -70,10 +70,7 @@ export const audioFilesSlice = createSlice({
 
       // selected id is last in the list
       if (currentIndex === state.orderedIds.length - 1) {
-        let isRepeat = true;
-        if (isRepeat) {
-          state.selectedId = state.orderedIds[0];
-        }
+        state.selectedId = state.orderedIds[0];
 
         return;
       }
@@ -102,10 +99,7 @@ export const audioFilesSlice = createSlice({
 
       // selected id is first in the list
       if (currentIndex === 0) {
-        let isRepeat = true;
-        if (isRepeat) {
-          state.selectedId = state.orderedIds.at(-1);
-        }
+        state.selectedId = state.orderedIds.at(-1);
 
         return;
       }

@@ -1,6 +1,6 @@
 import { formatSeconds } from "@/common/formats";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { nextAudio, previousAudio, selectIsAudioFilesShuffled, selectIsAutoPlay, selectSelectedAudioFile, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { nextAudio, previousAudio, selectAudioFiles, selectIsAudioFilesShuffled, selectIsAutoPlay, selectSelectedAudioFile, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -31,6 +31,9 @@ function AudioPlayer() {
   const [currentTime, setCurrentTime] = useState(0);
   const [bufferedTime, setBufferedTime] = useState(0);
   const isAutoPlay = useAppSelector(selectIsAutoPlay);
+  const [isRepeat, setIsRepeat] = useState(true);
+  const audioFiles = useAppSelector(selectAudioFiles);
+  const isLastInList = selectedAudioFile === audioFiles.at(-1);
   const dispatch = useAppDispatch();
 
   const handleShuffleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -71,6 +74,9 @@ function AudioPlayer() {
 
   const handleEnded: ReactEventHandler<HTMLAudioElement> = () => {
     if (isAutoPlay) {
+      if (isLastInList && !isRepeat) {
+        return;
+      }
       dispatch(nextAudio());
     }
   };
@@ -93,6 +99,10 @@ function AudioPlayer() {
 
   const handleForwardButtonClick = () => {
     audioRef.current.currentTime = Math.min(audioRef.current.currentTime + 10, audioDuration);
+  };
+
+  const handleRepeatChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    setIsRepeat(checked);
   };
 
   // handle song change
@@ -157,6 +167,8 @@ function AudioPlayer() {
             inputProps={{ "aria-label": "Repeat" }}
             icon={<RepeatIcon />}
             checkedIcon={<RepeatOnIcon />}
+            checked={isRepeat}
+            onChange={handleRepeatChange}
           />
         </Tooltip>
       </Box>
