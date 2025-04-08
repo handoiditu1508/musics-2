@@ -1,7 +1,10 @@
+import SupportActionMenu from "@/components/SupportActionMenu";
 import { useAppDispatch, useAppSelector } from "@/hooks";
+import SupportAction from "@/models/SupportAction";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
-import { selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, updateQuery, updateSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
+import { moveDown, moveUp, selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, setAsNextAudio, updateQuery, updateSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import ClearIcon from "@mui/icons-material/Clear";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, Button, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemText, Skeleton, styled, TextField, Tooltip, Typography, useTheme } from "@mui/material";
@@ -19,7 +22,38 @@ function CustomListItem(props: ListChildComponentProps) {
   const audioFile = audioFiles[index];
   const query = useAppSelector(selectQuery);
   const selectedId = useAppSelector(selectSelectedAudioFileId);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
   const dispatch = useAppDispatch();
+
+  const supportActions: SupportAction[] = [
+    {
+      id: 1,
+      text: "Play this song next",
+      disabled: audioFile.id === selectedId,
+      actionHandler: () => {
+        dispatch(setAsNextAudio(audioFile.id));
+        handleClose();
+      },
+    },
+    {
+      id: 2,
+      text: "Move up",
+      actionHandler: () => {
+        dispatch(moveUp(audioFile.id));
+        handleClose();
+      },
+    },
+    {
+      id: 3,
+      text: "Move down",
+      actionHandler: () => {
+        dispatch(moveDown(audioFile.id));
+        handleClose();
+      },
+    },
+  ];
+
   let itemText: ReactNode = audioFile.name;
 
   if (query) {
@@ -40,8 +74,47 @@ function CustomListItem(props: ListChildComponentProps) {
     ));
   }
 
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
-    <ListItem key={audioFile.id} style={style} dense>
+    <ListItem
+      key={audioFile.id}
+      style={style}
+      dense
+      secondaryAction={
+        <IconButton
+          id={`song-actions-button-${audioFile.id}`}
+          aria-controls={open ? `song-actions-menu-${audioFile.id}` : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          edge="end"
+          aria-label="actions"
+          onClick={handleClick}>
+          <MoreVertIcon />
+        </IconButton>
+      }>
+      <SupportActionMenu
+        id={`song-actions-menu-${audioFile.id}`}
+        aria-labelledby={`song-actions-button-${audioFile.id}`}
+        open={open}
+        anchorEl={anchorEl}
+        supportActions={supportActions}
+        anchorOrigin={{
+          vertical: "center",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        onClose={handleClose}
+      />
       <ListItemButton
         selected={selectedId === audioFile.id}
         onClick={() => dispatch(updateSelectedAudioFileId(audioFile.id))}>

@@ -139,6 +139,79 @@ export const audioFilesSlice = createSlice({
     setIsAutoPlay: (state, action: PayloadAction<boolean>) => {
       state.isAutoPlay = action.payload;
     },
+    setAsNextAudio: (state, action: PayloadAction<number>) => {
+      const currentIndex = state.orderedIds.indexOf(action.payload);
+
+      // selected id not exist
+      if (currentIndex === -1) {
+        return;
+      }
+
+      if (state.selectedId === undefined) {
+        // just play the audio if no audio is selected
+        const currentId = state.orderedIds[currentIndex];
+        state.orderedIds.unshift(currentId);
+        state.selectedId = currentId;
+      } else {
+        // remove the current id from the list
+        // and add it to the next position of the selected id
+        const [currentId] = state.orderedIds.splice(currentIndex, 1);
+        const selectedIndex = state.orderedIds.indexOf(state.selectedId);
+
+        // selected id not exist
+        if (selectedIndex === -1) {
+          return;
+        }
+
+        // selected id is last in the list
+        if (selectedIndex === state.orderedIds.length - 1) {
+          state.orderedIds.push(currentId);
+        } else {
+          state.orderedIds.splice(selectedIndex + 1, 0, currentId);
+        }
+
+        state.queriedAudioFiles = state.orderedIds.map((id) => state.entities[id]);
+        queryAudioFiles(state);
+      }
+    },
+    moveUp: (state, action: PayloadAction<number>) => {
+      const currentIndex = state.orderedIds.indexOf(action.payload);
+
+      // selected id not exist
+      if (currentIndex === -1) {
+        return;
+      }
+
+      // selected id is first in the list
+      if (currentIndex === 0) {
+        return;
+      }
+
+      const [currentId] = state.orderedIds.splice(currentIndex, 1);
+      state.orderedIds.splice(currentIndex - 1, 0, currentId);
+
+      state.queriedAudioFiles = state.orderedIds.map((id) => state.entities[id]);
+      queryAudioFiles(state);
+    },
+    moveDown: (state, action: PayloadAction<number>) => {
+      const currentIndex = state.orderedIds.indexOf(action.payload);
+
+      // selected id not exist
+      if (currentIndex === -1) {
+        return;
+      }
+
+      // selected id is last in the list
+      if (currentIndex === state.orderedIds.length - 1) {
+        return;
+      }
+
+      const [currentId] = state.orderedIds.splice(currentIndex, 1);
+      state.orderedIds.splice(currentIndex + 1, 0, currentId);
+
+      state.queriedAudioFiles = state.orderedIds.map((id) => state.entities[id]);
+      queryAudioFiles(state);
+    },
   },
 });
 
@@ -178,6 +251,9 @@ export const {
   shuffleAudioFiles,
   unShuffleAudioFiles,
   setIsAutoPlay,
+  setAsNextAudio,
+  moveUp,
+  moveDown,
 } = audioFilesSlice.actions;
 
 const audioFilesSelectors = audioFilesAdapter.getSelectors<RootState>((state) => state.audioFiles);
