@@ -1,6 +1,6 @@
 import { formatSeconds } from "@/common/formats";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { nextAudio, previousAudio, selectAudioFiles, selectIsAudioFilesShuffled, selectIsAutoPlay, selectSelectedAudioFile, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { nextAudio, previousAudio, selectAudioFiles, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectSelectedAudioFile, selectVolume, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -34,6 +34,8 @@ function AudioPlayer() {
   const [isRepeat, setIsRepeat] = useState(true);
   const audioFiles = useAppSelector(selectAudioFiles);
   const isLastInList = selectedAudioFile === audioFiles.at(-1);
+  const volume = useAppSelector(selectVolume);
+  const muted = useAppSelector(selectMuted);
   const dispatch = useAppDispatch();
 
   const handleShuffleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -115,6 +117,11 @@ function AudioPlayer() {
       audioRef.current.pause();
     }
   }, [selectedAudioFile]);
+
+  // handle volume change
+  useEffect(() => {
+    audioRef.current.volume = volume;
+  }, [volume]);
 
   return (
     <Box sx={{
@@ -220,6 +227,7 @@ function AudioPlayer() {
         <audio
           ref={audioRef}
           src={selectedAudioFile ? selectedAudioFile.path : undefined}
+          muted={muted}
           style={{ display: "none" }}
           onPlay={handlePlay}
           onPause={handlePause}
