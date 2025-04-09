@@ -1,3 +1,4 @@
+import { InfoContext } from "@/contexts/info";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectIsAutoPlay, selectMuted, selectVolume, setIsAutoPlay, setMuted, setVolume } from "@/redux/slices/audioFileSlice";
 import AutoModeIcon from "@mui/icons-material/AutoMode";
@@ -7,7 +8,7 @@ import VolumeMuteIcon from "@mui/icons-material/VolumeMute";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { Box, Checkbox, Fade, IconButton, Paper, Popper, Slider, Tooltip, useTheme } from "@mui/material";
-import { MouseEventHandler, useId, useState } from "react";
+import { MouseEventHandler, useContext, useId, useState } from "react";
 
 const getVolumeIcon = (volume: number, muted: boolean) => {
   if (muted) {
@@ -39,6 +40,7 @@ function MiscellaneousOptions() {
   const volumeOpen = Boolean(volumeAnchorEl);
   const volumeId = useId();
   const isAutoPlay = useAppSelector(selectIsAutoPlay);
+  const { mobile } = useContext(InfoContext);
   const dispatch = useAppDispatch();
 
   const handleAutoPlayChange = (_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -81,14 +83,31 @@ function MiscellaneousOptions() {
         />
       </Tooltip>
 
-      <Box onMouseEnter={handleOpenVolume} onMouseLeave={handleCloseVolume}>
+      <Box
+        {...(!mobile && {
+          onMouseEnter: handleOpenVolume,
+          onMouseLeave: handleCloseVolume,
+        })}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <IconButton
           aria-label={volumeTitle}
           aria-describedby={volumeId}
           onClick={handleMutedChange}>
           {volumeIcon}
         </IconButton>
-        <Popper
+        {mobile && <Slider
+          min={0}
+          max={1}
+          value={muted ? 0 : volume}
+          step={0.1}
+          sx={{ width: 100 }}
+          onChange={handleVolumeChange}
+        />}
+        {!mobile && <Popper
           id={volumeId}
           open={volumeOpen}
           anchorEl={volumeAnchorEl}
@@ -121,7 +140,7 @@ function MiscellaneousOptions() {
               </Paper>
             </Fade>
           )}
-        </Popper>
+        </Popper>}
       </Box>
 
       <Tooltip title="More options" placement="top">
