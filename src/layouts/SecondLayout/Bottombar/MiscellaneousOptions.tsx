@@ -2,12 +2,15 @@ import { InfoContext } from "@/contexts/info";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectCooldownTime, selectIsAutoPlay, selectMuted, selectVolume, setCooldownTime, setIsAutoPlay, setMuted, setVolume } from "@/redux/slices/audioFileSlice";
 import AutoModeIcon from "@mui/icons-material/AutoMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 import SettingsIcon from "@mui/icons-material/Settings";
+import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";
 import VolumeDownIcon from "@mui/icons-material/VolumeDown";
 import VolumeMuteIcon from "@mui/icons-material/VolumeMute";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fade, IconButton, OutlinedInput, Paper, Popper, Slider, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fade, IconButton, OutlinedInput, Paper, Popper, Slider, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useColorScheme, useTheme } from "@mui/material";
 import { ChangeEventHandler, MouseEventHandler, useContext, useId, useState } from "react";
 
 const getVolumeIcon = (volume: number, muted: boolean) => {
@@ -44,6 +47,7 @@ function MiscellaneousOptions() {
   const [settingOpen, setSettingOpen] = useState(false);
   const settingTitleId = useId();
   const cooldownTime = useAppSelector(selectCooldownTime);
+  const { mode, setMode } = useColorScheme();
   const dispatch = useAppDispatch();
 
   const handleAutoPlayChange = (_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -167,12 +171,23 @@ function MiscellaneousOptions() {
       <Dialog
         open={settingOpen}
         aria-labelledby={settingTitleId}
+        keepMounted={false}
         onClose={handleSettingClose}>
         <DialogTitle id={settingTitleId}>Setting</DialogTitle>
         <DialogContent>
-          <Box component="table" sx={{ width: "100%" }}>
+          <Box
+            component="table"
+            sx={{
+              width: "100%",
+              borderCollapse: "collapse",
+            }}>
             <tbody>
-              <tr>
+              <Box
+                component="tr"
+                sx={{
+                  borderBottom: `1px solid ${theme.palette.divider}`,
+                  td: { paddingBottom: 1 },
+                }}>
                 <Box component="td" sx={{ paddingRight: 1 }}>
                   <Typography>Timeout between songs</Typography>
                 </Box>
@@ -184,7 +199,23 @@ function MiscellaneousOptions() {
                     onChange={handleCooldownTimeChange}
                   />
                 </Box>
-              </tr>
+              </Box>
+              <Box
+                component="tr"
+                sx={{
+                  td: { paddingTop: 1 },
+                }}>
+                <Box component="td" sx={{ paddingRight: 1 }}>
+                  <Typography>Mode</Typography>
+                </Box>
+                <Box component="td" sx={{ textAlign: "right" }}>
+                  <ToggleButtonGroup value={mode} color="primary" fullWidth aria-label="toggle button group" size="small">
+                    <ToggleButton value="light" onClick={() => setMode("light")}><LightModeIcon /></ToggleButton>
+                    <ToggleButton value="system" onClick={() => setMode("system")}><SettingsBrightnessIcon /></ToggleButton>
+                    <ToggleButton value="dark" onClick={() => setMode("dark")}><DarkModeIcon /></ToggleButton>
+                  </ToggleButtonGroup>
+                </Box>
+              </Box>
             </tbody>
           </Box>
         </DialogContent>
