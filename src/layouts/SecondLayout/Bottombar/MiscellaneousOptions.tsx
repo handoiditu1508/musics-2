@@ -1,14 +1,14 @@
 import { InfoContext } from "@/contexts/info";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { selectIsAutoPlay, selectMuted, selectVolume, setIsAutoPlay, setMuted, setVolume } from "@/redux/slices/audioFileSlice";
+import { selectCooldownTime, selectIsAutoPlay, selectMuted, selectVolume, setCooldownTime, setIsAutoPlay, setMuted, setVolume } from "@/redux/slices/audioFileSlice";
 import AutoModeIcon from "@mui/icons-material/AutoMode";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import SettingsIcon from "@mui/icons-material/Settings";
 import VolumeDownIcon from "@mui/icons-material/VolumeDown";
 import VolumeMuteIcon from "@mui/icons-material/VolumeMute";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import { Box, Checkbox, Fade, IconButton, Paper, Popper, Slider, Tooltip, useTheme } from "@mui/material";
-import { MouseEventHandler, useContext, useId, useState } from "react";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fade, IconButton, OutlinedInput, Paper, Popper, Slider, Tooltip, Typography, useTheme } from "@mui/material";
+import { ChangeEventHandler, MouseEventHandler, useContext, useId, useState } from "react";
 
 const getVolumeIcon = (volume: number, muted: boolean) => {
   if (muted) {
@@ -41,17 +41,20 @@ function MiscellaneousOptions() {
   const volumeId = useId();
   const isAutoPlay = useAppSelector(selectIsAutoPlay);
   const { mobile } = useContext(InfoContext);
+  const [settingOpen, setSettingOpen] = useState(false);
+  const settingTitleId = useId();
+  const cooldownTime = useAppSelector(selectCooldownTime);
   const dispatch = useAppDispatch();
 
   const handleAutoPlayChange = (_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     dispatch(setIsAutoPlay(!isAutoPlay));
   };
 
-  const handleOpenVolume: MouseEventHandler<HTMLElement> = (event) => {
+  const handleVolumeOpen: MouseEventHandler<HTMLElement> = (event) => {
     setVolumeAnchorEl(event.currentTarget);
   };
 
-  const handleCloseVolume: MouseEventHandler<HTMLElement> = (event) => {
+  const handleVolumeClose: MouseEventHandler<HTMLElement> = (event) => {
     setVolumeAnchorEl(null);
   };
 
@@ -61,6 +64,19 @@ function MiscellaneousOptions() {
 
   const handleMutedChange: MouseEventHandler<HTMLButtonElement> = () => {
     dispatch(setMuted(!muted));
+  };
+
+  const handleSettingOpen = () => {
+    setSettingOpen(true);
+  };
+
+  const handleSettingClose = () => {
+    setSettingOpen(false);
+  };
+
+  const handleCooldownTimeChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const timeSeconds = parseFloat(event.currentTarget.value) || 0;
+    dispatch(setCooldownTime(timeSeconds * 1000));
   };
 
   return (
@@ -85,8 +101,8 @@ function MiscellaneousOptions() {
 
       <Box
         {...(!mobile && {
-          onMouseEnter: handleOpenVolume,
-          onMouseLeave: handleCloseVolume,
+          onMouseEnter: handleVolumeOpen,
+          onMouseLeave: handleVolumeClose,
         })}
         sx={{
           display: "flex",
@@ -143,11 +159,39 @@ function MiscellaneousOptions() {
         </Popper>}
       </Box>
 
-      <Tooltip title="More options" placement="top">
-        <IconButton aria-label="More options">
-          <MoreVertIcon />
+      <Tooltip title="Setting" placement="top">
+        <IconButton aria-label="Setting" onClick={handleSettingOpen}>
+          <SettingsIcon />
         </IconButton>
       </Tooltip>
+      <Dialog
+        open={settingOpen}
+        aria-labelledby={settingTitleId}
+        onClose={handleSettingClose}>
+        <DialogTitle id={settingTitleId}>Setting</DialogTitle>
+        <DialogContent>
+          <Box component="table" sx={{ width: "100%" }}>
+            <tbody>
+              <tr>
+                <Box component="td" sx={{ paddingRight: 1 }}>
+                  <Typography>Timeout between songs</Typography>
+                </Box>
+                <Box component="td" sx={{ textAlign: "right" }}>
+                  <OutlinedInput
+                    value={cooldownTime / 1000}
+                    size="small"
+                    type="number"
+                    onChange={handleCooldownTimeChange}
+                  />
+                </Box>
+              </tr>
+            </tbody>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSettingClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

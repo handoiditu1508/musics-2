@@ -1,6 +1,6 @@
 import { formatSeconds } from "@/common/formats";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { nextAudio, previousAudio, selectAudioFiles, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectSelectedAudioFile, selectVolume, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectSelectedAudioFile, selectVolume, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -13,6 +13,7 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import { Box, Checkbox, IconButton, Slider, Tooltip, Typography, sliderClasses, useTheme } from "@mui/material";
 import { CSSProperties, MouseEventHandler, ReactEventHandler, useEffect, useRef, useState } from "react";
+import NextSongTimeoutProgress from "./NextSongTimeoutProgress";
 
 const handlePlayAbortError = (error: Error) => {
   if (error.name !== "AbortError") {
@@ -36,6 +37,17 @@ function AudioPlayer() {
   const isLastInList = selectedAudioFile === audioFiles.at(-1);
   const volume = useAppSelector(selectVolume);
   const muted = useAppSelector(selectMuted);
+  const cooldownTime = useAppSelector(selectCooldownTime);
+  const nextSongTimeoutId = useRef<NodeJS.Timeout>(undefined);
+  const [currentTimeout, setCurrentTimeout] = useState<{
+    timeoutId?: NodeJS.Timeout | string | number;
+    /**
+     * Miliseconds.
+     */
+    time: number;
+  }>({
+    time: 0,
+  });
   const dispatch = useAppDispatch();
 
   const handleShuffleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -79,7 +91,20 @@ function AudioPlayer() {
       if (isLastInList && !isRepeat) {
         return;
       }
-      dispatch(nextAudio());
+
+      // schedule next song or play next song immediately
+      if (cooldownTime) {
+        nextSongTimeoutId.current = setTimeout(() => {
+          dispatch(nextAudio());
+        }, cooldownTime);
+
+        setCurrentTimeout({
+          timeoutId: nextSongTimeoutId.current,
+          time: cooldownTime,
+        });
+      } else {
+        dispatch(nextAudio());
+      }
     }
   };
 
@@ -107,11 +132,18 @@ function AudioPlayer() {
     setIsRepeat(checked);
   };
 
+  const handleCancelNextSongTimeout = () => {
+    clearTimeout(nextSongTimeoutId.current);
+    setCurrentTimeout({ time: 0 });
+  };
+
   // handle song change
   useEffect(() => {
     if (selectedAudioFile) {
       setCurrentTime(0);
       setBufferedTime(0);
+      clearTimeout(nextSongTimeoutId.current);
+      setCurrentTimeout({ time: 0 });
       audioRef.current.play().catch(handlePlayAbortError);
     } else {
       audioRef.current.pause();
@@ -178,6 +210,11 @@ function AudioPlayer() {
             onChange={handleRepeatChange}
           />
         </Tooltip>
+        <NextSongTimeoutProgress
+          timeoutId={currentTimeout.timeoutId}
+          time={currentTimeout.time}
+          onCancel={handleCancelNextSongTimeout}
+        />
       </Box>
       <Box sx={{
         display: "flex",

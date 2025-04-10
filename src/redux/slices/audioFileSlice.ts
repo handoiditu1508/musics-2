@@ -17,6 +17,10 @@ export type AudioFilesState = EntityState<AudioFile, number> & {
    */
   volume: number;
   muted: boolean;
+  /**
+   * Miliseconds.
+   */
+  cooldownTime: number;
 };
 
 const initialState: AudioFilesState = {
@@ -29,6 +33,7 @@ const initialState: AudioFilesState = {
   isAutoPlay: true,
   volume: 1,
   muted: false,
+  cooldownTime: 0,
 };
 
 export const audioFilesSlice = createSlice({
@@ -225,6 +230,9 @@ export const audioFilesSlice = createSlice({
     setMuted: (state, action: PayloadAction<boolean>) => {
       state.muted = action.payload;
     },
+    setCooldownTime: (state, action: PayloadAction<number>) => {
+      state.cooldownTime = action.payload;
+    },
   },
 });
 
@@ -269,6 +277,7 @@ export const {
   moveDown,
   setVolume,
   setMuted,
+  setCooldownTime,
 } = audioFilesSlice.actions;
 
 const audioFilesSelectors = audioFilesAdapter.getSelectors<RootState>((state) => state.audioFiles);
@@ -286,3 +295,4 @@ export const selectIsAudioFilesShuffled = (state: RootState) => state.audioFiles
 export const selectIsAutoPlay = (state: RootState) => state.audioFiles.isAutoPlay;
 export const selectVolume = (state: RootState) => state.audioFiles.volume;
 export const selectMuted = (state: RootState) => state.audioFiles.muted;
+export const selectCooldownTime = (state: RootState) => state.audioFiles.cooldownTime;
