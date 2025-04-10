@@ -12,7 +12,7 @@ import ShuffleOnIcon from "@mui/icons-material/ShuffleOn";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import { Box, Checkbox, IconButton, Slider, Tooltip, Typography, sliderClasses, useTheme } from "@mui/material";
-import { CSSProperties, MouseEventHandler, ReactEventHandler, useEffect, useRef, useState } from "react";
+import { CSSProperties, ReactEventHandler, useEffect, useRef, useState } from "react";
 import NextSongTimeoutProgress from "./NextSongTimeoutProgress";
 
 const handlePlayAbortError = (error: Error) => {
@@ -58,7 +58,7 @@ function AudioPlayer() {
     }
   };
 
-  const handlePlayButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handlePlayButtonClick = () => {
     if (audioRef.current.paused) {
       if (audioRef.current.currentSrc) {
         audioRef.current.play().catch(handlePlayAbortError);
@@ -77,7 +77,16 @@ function AudioPlayer() {
   };
 
   const handleTimeUpdate: ReactEventHandler<HTMLAudioElement> = () => {
-    setCurrentTime(audioRef.current.currentTime);
+    const currentTime = Math.min(audioRef.current.currentTime, audioDuration);
+
+    setCurrentTime(currentTime);
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.setPositionState({
+        duration: audioDuration,
+        position: currentTime,
+      });
+    }
   };
 
   const handleProgress: ReactEventHandler<HTMLAudioElement> = () => {
@@ -140,20 +149,66 @@ function AudioPlayer() {
   // handle song change
   useEffect(() => {
     if (selectedAudioFile) {
+      // reset states
       setCurrentTime(0);
       setBufferedTime(0);
+
+      // clear next song timeout
       clearTimeout(nextSongTimeoutId.current);
       setCurrentTimeout({ time: 0 });
+
+      // update media controls api
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.setPositionState({
+          duration: audioDuration,
+          position: 0,
+        });
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: selectedAudioFile.title,
+          artist: selectedAudioFile.artists.join(", "),
+          album: "My playlist",
+          artwork: [
+            {
+              src: "favicon.ico",
+              sizes: "64x64 32x32 24x24 16x16",
+              type: "image/x-icon",
+            },
+            {
+              src: "logo192.png",
+              type: "image/png",
+              sizes: "192x192",
+            },
+            {
+              src: "logo512.png",
+              type: "image/png",
+              sizes: "512x512",
+            },
+          ],
+        });
+      }
+
+      // play
       audioRef.current.play().catch(handlePlayAbortError);
     } else {
       audioRef.current.pause();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAudioFile]);
 
   // handle volume change
   useEffect(() => {
     audioRef.current.volume = volume;
   }, [volume]);
+
+  if ("mediaSession" in navigator) {
+    navigator.mediaSession.setActionHandler("nexttrack", handleNextButtonClick);
+    navigator.mediaSession.setActionHandler("previoustrack", handlePreviousButtonClick);
+    navigator.mediaSession.setActionHandler("pause", handlePlayButtonClick);
+    navigator.mediaSession.setActionHandler("play", handlePlayButtonClick);
+    navigator.mediaSession.setActionHandler("seekbackward", handleReplayButtonClick);
+    navigator.mediaSession.setActionHandler("seekforward", handleForwardButtonClick);
+  }
 
   return (
     <Box sx={{
