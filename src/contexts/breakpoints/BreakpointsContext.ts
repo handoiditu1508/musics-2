@@ -9,9 +9,9 @@ export type BreakpointsContextType = {
   mdAndDown: boolean;
   md: boolean;
   mdAndUp: boolean;
-  // lgAndDown: boolean;
-  // lg: boolean;
-  // lgAndUp: boolean;
+  lgAndDown: boolean;
+  lg: boolean;
+  lgAndUp: boolean;
   // xl: boolean;
   // xlAndUp: boolean;
 };

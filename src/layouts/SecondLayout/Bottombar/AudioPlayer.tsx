@@ -1,4 +1,5 @@
 import { formatSeconds } from "@/common/formats";
+import { lgAndUpMediaQuery, mdAndDownMediaQuery } from "@/contexts/breakpoints";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectSelectedAudioFile, selectVolume, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
@@ -213,7 +214,12 @@ function AudioPlayer() {
   return (
     <Box sx={{
       flex: 1,
-      maxWidth: 600,
+      [mdAndDownMediaQuery(theme.breakpoints)]: {
+        paddingX: 1,
+      },
+      [lgAndUpMediaQuery(theme.breakpoints)]: {
+        maxWidth: 600,
+      },
     }}>
       <Box sx={{
         display: "flex",

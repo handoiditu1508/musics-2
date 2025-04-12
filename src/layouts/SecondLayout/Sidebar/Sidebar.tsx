@@ -1,7 +1,10 @@
+import CONFIG from "@/configs";
+import { BreakpointsContext, lgAndUpMediaQuery } from "@/contexts/breakpoints";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectBottomHeight, selectSidebarOpen, selectSidebarWidth, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Box, CSSObject, Drawer, IconButton, Theme, useTheme } from "@mui/material";
+import { useContext } from "react";
 import SidebarTabs from "./SidebarTabs";
 
 const openedMixin = (theme: Theme, sidebarWidth: number): CSSObject => ({
@@ -26,7 +29,8 @@ function Sidebar() {
   const bottomHeight = useAppSelector(selectBottomHeight);
   const open = useAppSelector(selectSidebarOpen);
   const dispatch = useAppDispatch();
-  const togglingCss = open ? openedMixin(theme, sidebarWidth) : closedMixin(theme);
+  const { lgAndUp } = useContext(BreakpointsContext);
+  const togglingCss = lgAndUp ? (open ? openedMixin(theme, sidebarWidth) : closedMixin(theme)) : CONFIG.EMPTY_OBJECT;
 
   return (
     <Box
@@ -34,14 +38,16 @@ function Sidebar() {
       sx={{
         ...togglingCss,
         position: "relative",
-        paddingBottom: `${bottomHeight}px`,
         ":hover": {
           ".toggle-sidebar-btn": {
             opacity: 1,
           },
         },
+        [lgAndUpMediaQuery(theme.breakpoints)]: {
+          paddingBottom: `${bottomHeight}px`,
+        },
       }}>
-      <IconButton
+      {lgAndUp && <IconButton
         size="small"
         className="toggle-sidebar-btn"
         sx={[
@@ -71,10 +77,10 @@ function Sidebar() {
             transform: open ? "rotate(180deg)" : undefined,
           }}
         />
-      </IconButton>
+      </IconButton>}
       <Drawer
         open={open}
-        variant="permanent"
+        variant={lgAndUp ? "permanent" : "temporary"}
         sx={togglingCss}
         PaperProps={{
           sx: togglingCss,

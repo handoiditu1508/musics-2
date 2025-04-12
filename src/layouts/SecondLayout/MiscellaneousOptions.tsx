@@ -1,3 +1,4 @@
+import { lgAndUpMediaQuery } from "@/contexts/breakpoints";
 import { InfoContext } from "@/contexts/info";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectCooldownTime, selectIsAutoPlay, selectMuted, selectVolume, setCooldownTime, setIsAutoPlay, setMuted, setVolume } from "@/redux/slices/audioFileSlice";
@@ -87,11 +88,13 @@ function MiscellaneousOptions() {
     <Box sx={{
       flexGrow: 0,
       flexShrink: 1,
-      flexBasis: 300,
       display: "flex",
       justifyContent: "flex-end",
       alignItems: "flex-start",
       gap: 1,
+      [lgAndUpMediaQuery(theme.breakpoints)]: {
+        flexBasis: 300,
+      },
     }}>
       <Tooltip title="Auto play" placement="top">
         <Checkbox
@@ -164,7 +167,7 @@ function MiscellaneousOptions() {
       </Box>
 
       <Tooltip title="Setting" placement="top">
-        <IconButton aria-label="Setting" onClick={handleSettingOpen}>
+        <IconButton aria-label="Setting" edge="end" onClick={handleSettingOpen}>
           <SettingsIcon />
         </IconButton>
       </Tooltip>

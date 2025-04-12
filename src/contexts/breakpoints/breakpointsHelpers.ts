@@ -8,8 +8,8 @@ export const smAndUpMediaQuery = (breakpoints: Breakpoints) => breakpoints.up("s
 export const mdAndDownMediaQuery = (breakpoints: Breakpoints) => breakpoints.down("lg");
 export const mdMediaQuery = (breakpoints: Breakpoints) => breakpoints.only("md");
 export const mdAndUpMediaQuery = (breakpoints: Breakpoints) => breakpoints.up("md");
-// export const lgAndDownMediaQuery = (breakpoints: Breakpoints) => breakpoints.down("xl");
-// export const lgMediaQuery = (breakpoints: Breakpoints) => breakpoints.only("lg");
-// export const lgAndUpMediaQuery = (breakpoints: Breakpoints) => breakpoints.up("lg");
+export const lgAndDownMediaQuery = (breakpoints: Breakpoints) => breakpoints.down("xl");
+export const lgMediaQuery = (breakpoints: Breakpoints) => breakpoints.only("lg");
+export const lgAndUpMediaQuery = (breakpoints: Breakpoints) => breakpoints.up("lg");
 // export const xlMediaQuery = (breakpoints: Breakpoints) => breakpoints.only("xl");
 // export const xlAndUpMediaQuery = (breakpoints: Breakpoints) => breakpoints.up("xl");
