@@ -173,7 +173,7 @@ function ArtistsTabPanel() {
           itemSize={36.016}
           height={listHeight}
           itemCount={queriedArtists.length}
-          width={300}
+          width="100%"
           itemData={{
             artistQuery: deferredSearchValue,
             artists: queriedArtists,

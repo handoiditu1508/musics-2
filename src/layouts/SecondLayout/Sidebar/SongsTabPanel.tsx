@@ -251,7 +251,7 @@ function SongsTabPanel() {
           itemSize={36.016}
           height={listHeight}
           itemCount={filteredAudioFiles.length}
-          width={300}
+          width="100%"
         >
           {CustomListItem}
         </StyledFixedSizeList>}

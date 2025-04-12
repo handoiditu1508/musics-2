@@ -99,35 +99,63 @@ const mainTheme = createTheme({
   },
   mixins: {
     scrollbar: {
-      "&::-webkit-scrollbar": {
-        width: scrollbarSize,
-        height: scrollbarSize,
-      },
-      "&::-webkit-scrollbar-track": {
-        borderRadius: scrollbarSize,
-        backgroundColor: "transparent",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "transparent",
-        borderRadius: scrollbarSize,
-        border: "2px solid transparent",
-      },
-      "&::-webkit-scrollbar-button": {
-        display: "none",
-      },
-      "&::-webkit-scrollbar-corner": {
-        display: "none",
-      },
-      "&:hover": {
+      "@media (pointer: fine)": {
+        "&::-webkit-scrollbar": {
+          width: scrollbarSize,
+          height: scrollbarSize,
+        },
+        "&::-webkit-scrollbar-track": {
+          borderRadius: scrollbarSize,
+          backgroundColor: "var(--mui-palette-scrollbar-hover-track)",
+        },
         "&::-webkit-scrollbar-thumb": {
           backgroundColor: "var(--mui-palette-scrollbar-hover-thumbBackground)",
-          borderColor: "var(--mui-palette-scrollbar-hover-thumbBorder)",
+          borderRadius: scrollbarSize,
+          border: "2px solid var(--mui-palette-scrollbar-hover-thumbBorder)",
           "&:hover": {
             backgroundColor: "var(--mui-palette-scrollbar-thumb-hover-background)",
           },
         },
+        "&::-webkit-scrollbar-button": {
+          display: "none",
+        },
+        "&::-webkit-scrollbar-corner": {
+          display: "none",
+        },
+      },
+    },
+    temporaryScrollbar: {
+      "@media (pointer: fine)": {
+        "&::-webkit-scrollbar": {
+          width: scrollbarSize,
+          height: scrollbarSize,
+        },
         "&::-webkit-scrollbar-track": {
-          backgroundColor: "var(--mui-palette-scrollbar-hover-track)",
+          borderRadius: scrollbarSize,
+          backgroundColor: "transparent",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "transparent",
+          borderRadius: scrollbarSize,
+          border: "2px solid transparent",
+        },
+        "&::-webkit-scrollbar-button": {
+          display: "none",
+        },
+        "&::-webkit-scrollbar-corner": {
+          display: "none",
+        },
+        "&:hover": {
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "var(--mui-palette-scrollbar-hover-thumbBackground)",
+            borderColor: "var(--mui-palette-scrollbar-hover-thumbBorder)",
+            "&:hover": {
+              backgroundColor: "var(--mui-palette-scrollbar-thumb-hover-background)",
+            },
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "var(--mui-palette-scrollbar-hover-track)",
+          },
         },
       },
     },

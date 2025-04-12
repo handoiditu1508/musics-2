@@ -29,24 +29,26 @@ function Sidebar() {
   const bottomHeight = useAppSelector(selectBottomHeight);
   const open = useAppSelector(selectSidebarOpen);
   const dispatch = useAppDispatch();
-  const { lgAndUp } = useContext(BreakpointsContext);
+  const { xs, lgAndUp } = useContext(BreakpointsContext);
   const togglingCss = lgAndUp ? (open ? openedMixin(theme, sidebarWidth) : closedMixin(theme)) : CONFIG.EMPTY_OBJECT;
 
   return (
     <Box
       component="nav"
-      sx={{
-        ...togglingCss,
-        position: "relative",
-        ":hover": {
-          ".toggle-sidebar-btn": {
-            opacity: 1,
+      sx={[
+        togglingCss,
+        {
+          position: "relative",
+          ":hover": {
+            ".toggle-sidebar-btn": {
+              opacity: 1,
+            },
+          },
+          [lgAndUpMediaQuery(theme.breakpoints)]: {
+            paddingBottom: `${bottomHeight}px`,
           },
         },
-        [lgAndUpMediaQuery(theme.breakpoints)]: {
-          paddingBottom: `${bottomHeight}px`,
-        },
-      }}>
+      ]}>
       {lgAndUp && <IconButton
         size="small"
         className="toggle-sidebar-btn"
@@ -81,11 +83,24 @@ function Sidebar() {
       <Drawer
         open={open}
         variant={lgAndUp ? "permanent" : "temporary"}
-        sx={togglingCss}
+        anchor={xs ? "bottom" : "left"}
+        sx={[
+          togglingCss,
+          xs && {
+            width: "100%",
+          },
+        ]}
         PaperProps={{
-          sx: togglingCss,
+          sx: [
+            togglingCss,
+            xs && {
+              width: "100%",
+              height: "calc(100% - var(--mui-constants-xsHeaderHeight))",
+            },
+          ],
           elevation: 3,
         }}
+        hideBackdrop={xs}
         onClose={() => dispatch(toggleSidebar(false))}>
         <SidebarTabs />
       </Drawer>

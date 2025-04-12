@@ -54,6 +54,7 @@ declare module "@mui/material/styles" {
 
   export interface Mixins {
     scrollbar: CSSProperties;
+    temporaryScrollbar: CSSProperties;
     hideNumberInputArrows: CSSProperties;
   }
 
