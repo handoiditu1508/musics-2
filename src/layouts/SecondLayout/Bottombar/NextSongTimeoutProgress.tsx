@@ -41,7 +41,10 @@ function NextSongTimeoutProgress({ timeoutId, time, onCancel }: NextSongTimeoutP
       <ButtonBase
         sx={{
           borderRadius: "50%",
-          position: "relative",
+          position: "absolute",
+          right: 0,
+          top: "50%",
+          transform: "translateY(-50%)",
           [`.${svgIconClasses.root}`]: {
             display: "none",
           },

@@ -220,6 +220,7 @@ function AudioPlayer() {
         justifyContent: "center",
         alignItems: "center",
         gap: 1,
+        position: "relative",
       }}
       >
         <Tooltip title="Shuffle" placement="top">
