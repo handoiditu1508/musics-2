@@ -13,6 +13,9 @@ i18n
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
+    backend: {
+      loadPath: "/musics-2/locales/{{lng}}/{{ns}}.json",
+    },
   });
 
 export default i18n;
