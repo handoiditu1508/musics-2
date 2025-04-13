@@ -1,5 +1,5 @@
 import { formatSeconds } from "@/common/formats";
-import { lgAndUpMediaQuery, mdAndDownMediaQuery } from "@/contexts/breakpoints";
+import { lgAndUpMediaQuery, mdAndDownMediaQuery, smAndUpMediaQuery, xsMediaQuery } from "@/contexts/breakpoints";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectSelectedAudioFile, selectVolume, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
@@ -223,10 +223,15 @@ function AudioPlayer() {
     }}>
       <Box sx={{
         display: "flex",
-        justifyContent: "center",
         alignItems: "center",
-        gap: 1,
         position: "relative",
+        [xsMediaQuery(theme.breakpoints)]: {
+          justifyContent: "space-between",
+        },
+        [smAndUpMediaQuery(theme.breakpoints)]: {
+          justifyContent: "center",
+          gap: 1,
+        },
       }}
       >
         <Tooltip title="Shuffle" placement="top">
