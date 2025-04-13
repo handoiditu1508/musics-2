@@ -16,6 +16,7 @@ function Header() {
   return (
     <AppBar
       elevation={3}
+      color="inherit"
       sx={[
         xs && sidebarOpen && {
           zIndex: theme.zIndex.drawer + 1,
