@@ -2,8 +2,7 @@ import CONFIG from "@/configs";
 import { BreakpointsContext, lgAndUpMediaQuery } from "@/contexts/breakpoints";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectBottomHeight, selectSidebarOpen, selectSidebarWidth, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { Box, CSSObject, Drawer, IconButton, Theme, useTheme } from "@mui/material";
+import { Box, ButtonBase, CSSObject, Drawer, Theme, useTheme } from "@mui/material";
 import { useContext } from "react";
 import SidebarTabs from "./SidebarTabs";
 
@@ -49,37 +48,38 @@ function Sidebar() {
           },
         },
       ]}>
-      {lgAndUp && <IconButton
-        size="small"
+      {lgAndUp && <ButtonBase
         className="toggle-sidebar-btn"
         sx={[
           {
             position: "absolute",
-            right: -17,
+            right: -14,
             top: 150,
             zIndex: theme.zIndex.drawer + 1,
-            transition: theme.transitions.create(["background-color", "opacity"], {
-              duration: theme.transitions.duration.shortest,
-              easing: theme.transitions.easing.easeInOut,
-            }),
-            backgroundColor: `rgba(${theme.palette.background.defaultChannel} / 0.5)`,
-            ":hover": {
-              backgroundColor: `rgba(${theme.palette.background.defaultChannel} / 0.7)`,
-            },
+            width: 14,
+            height: 60,
           },
           (open && {
             opacity: 0,
-            right: -14,
           }),
         ]}
         onClick={() => dispatch(toggleSidebar())}>
-        <ChevronRightIcon
-          fontSize="inherit"
-          sx={{
-            transform: open ? "rotate(180deg)" : undefined,
-          }}
+        <Box sx={{
+          borderLeft: `14px solid ${theme.palette.scrollbar.hover.track}`,
+          borderTop: "5px solid transparent",
+          borderBottom: "5px solid transparent",
+          height: 60,
+          width: 0,
+          transition: theme.transitions.create(["border-left-color", "opacity"], {
+            duration: theme.transitions.duration.shortest,
+            easing: theme.transitions.easing.easeInOut,
+          }),
+          ":hover": {
+            opacity: 0.7,
+          },
+        }}
         />
-      </IconButton>}
+      </ButtonBase>}
       <Drawer
         open={open}
         variant={lgAndUp ? "permanent" : "temporary"}
