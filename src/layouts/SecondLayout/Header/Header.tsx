@@ -6,6 +6,7 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import { AppBar, Box, IconButton, Toolbar, useTheme } from "@mui/material";
 import { useContext } from "react";
 import MiscellaneousOptions from "../MiscellaneousOptions";
+import NextSongTimeoutProgress from "../NextSongTimeoutProgress";
 
 function Header() {
   const theme = useTheme();
@@ -28,6 +29,7 @@ function Header() {
           {sidebarOpen ? <MenuOpenIcon /> : <MenuIcon />}
         </IconButton>
         <Box flex={1} />
+        {xs && <NextSongTimeoutProgress />}
         <MiscellaneousOptions />
       </Toolbar>
     </AppBar>
