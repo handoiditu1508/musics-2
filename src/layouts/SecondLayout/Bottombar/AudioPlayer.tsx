@@ -1,7 +1,7 @@
 import { formatSeconds } from "@/common/formats";
-import { lgAndUpMediaQuery, mdAndDownMediaQuery, smAndUpMediaQuery, xsMediaQuery } from "@/contexts/breakpoints";
+import { BreakpointsContext, lgAndUpMediaQuery, mdAndDownMediaQuery, smAndUpMediaQuery, xsMediaQuery } from "@/contexts/breakpoints";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectSelectedAudioFile, selectVolume, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectSelectedAudioFile, selectVolume, setCurrentTimeout, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -13,8 +13,8 @@ import ShuffleOnIcon from "@mui/icons-material/ShuffleOn";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import { Box, Checkbox, IconButton, Slider, Tooltip, Typography, sliderClasses, useTheme } from "@mui/material";
-import { CSSProperties, ReactEventHandler, useEffect, useRef, useState } from "react";
-import NextSongTimeoutProgress from "./NextSongTimeoutProgress";
+import { CSSProperties, ReactEventHandler, useContext, useEffect, useRef, useState } from "react";
+import NextSongTimeoutProgress from "../NextSongTimeoutProgress";
 
 const handlePlayAbortError = (error: Error) => {
   if (error.name !== "AbortError") {
@@ -39,16 +39,8 @@ function AudioPlayer() {
   const volume = useAppSelector(selectVolume);
   const muted = useAppSelector(selectMuted);
   const cooldownTime = useAppSelector(selectCooldownTime);
-  const nextSongTimeoutId = useRef<NodeJS.Timeout>(undefined);
-  const [currentTimeout, setCurrentTimeout] = useState<{
-    timeoutId?: NodeJS.Timeout | string | number;
-    /**
-     * Miliseconds.
-     */
-    time: number;
-  }>({
-    time: 0,
-  });
+  const nextSongTimeoutId = useRef<string | number>(undefined);
+  const { smAndUp } = useContext(BreakpointsContext);
   const dispatch = useAppDispatch();
 
   const handleShuffleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -106,12 +98,12 @@ function AudioPlayer() {
       if (cooldownTime) {
         nextSongTimeoutId.current = setTimeout(() => {
           dispatch(nextAudio());
-        }, cooldownTime);
+        }, cooldownTime) as unknown as string | number;
 
-        setCurrentTimeout({
+        dispatch(setCurrentTimeout({
           timeoutId: nextSongTimeoutId.current,
-          time: cooldownTime,
-        });
+          duration: cooldownTime,
+        }));
       } else {
         dispatch(nextAudio());
       }
@@ -142,11 +134,6 @@ function AudioPlayer() {
     setIsRepeat(checked);
   };
 
-  const handleCancelNextSongTimeout = () => {
-    clearTimeout(nextSongTimeoutId.current);
-    setCurrentTimeout({ time: 0 });
-  };
-
   // handle song change
   useEffect(() => {
     if (selectedAudioFile) {
@@ -156,7 +143,9 @@ function AudioPlayer() {
 
       // clear next song timeout
       clearTimeout(nextSongTimeoutId.current);
-      setCurrentTimeout({ time: 0 });
+      dispatch(setCurrentTimeout({
+        duration: 0,
+      }));
 
       // update media controls api
       if ("mediaSession" in navigator) {
@@ -277,11 +266,7 @@ function AudioPlayer() {
             onChange={handleRepeatChange}
           />
         </Tooltip>
-        <NextSongTimeoutProgress
-          timeoutId={currentTimeout.timeoutId}
-          time={currentTimeout.time}
-          onCancel={handleCancelNextSongTimeout}
-        />
+        {smAndUp && <NextSongTimeoutProgress />}
       </Box>
       <Box sx={{
         display: "flex",

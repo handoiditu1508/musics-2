@@ -21,6 +21,11 @@ export type AudioFilesState = EntityState<AudioFile, number> & {
    * Miliseconds.
    */
   cooldownTime: number;
+  currentTimeoutId?: string | number;
+  /**
+   * Miliseconds.
+   */
+  currentTimeoutDuration: number;
 };
 
 const initialState: AudioFilesState = {
@@ -34,6 +39,7 @@ const initialState: AudioFilesState = {
   volume: 1,
   muted: false,
   cooldownTime: 0,
+  currentTimeoutDuration: 0,
 };
 
 export const audioFilesSlice = createSlice({
@@ -233,6 +239,13 @@ export const audioFilesSlice = createSlice({
     setCooldownTime: (state, action: PayloadAction<number>) => {
       state.cooldownTime = action.payload;
     },
+    setCurrentTimeout: (state, action: PayloadAction<{
+      timeoutId?: string | number;
+      duration: number;
+    }>) => {
+      state.currentTimeoutId = action.payload.timeoutId;
+      state.currentTimeoutDuration = action.payload.duration;
+    },
   },
 });
 
@@ -278,6 +291,7 @@ export const {
   setVolume,
   setMuted,
   setCooldownTime,
+  setCurrentTimeout,
 } = audioFilesSlice.actions;
 
 const audioFilesSelectors = audioFilesAdapter.getSelectors<RootState>((state) => state.audioFiles);
@@ -296,3 +310,5 @@ export const selectIsAutoPlay = (state: RootState) => state.audioFiles.isAutoPla
 export const selectVolume = (state: RootState) => state.audioFiles.volume;
 export const selectMuted = (state: RootState) => state.audioFiles.muted;
 export const selectCooldownTime = (state: RootState) => state.audioFiles.cooldownTime;
+export const selectCurrentTimeoutId = (state: RootState) => state.audioFiles.currentTimeoutId;
+export const selectCurrentTimeoutDuration = (state: RootState) => state.audioFiles.currentTimeoutDuration;
