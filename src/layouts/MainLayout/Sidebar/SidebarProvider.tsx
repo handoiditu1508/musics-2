@@ -6,12 +6,14 @@ import { faHandFist } from "@fortawesome/free-solid-svg-icons/faHandFist";
 import { faSkull } from "@fortawesome/free-solid-svg-icons/faSkull";
 import { mdiShieldSword } from "@mdi/js";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
+import AirIcon from "@mui/icons-material/Air";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
 import FlareIcon from "@mui/icons-material/Flare";
 import ForestIcon from "@mui/icons-material/Forest";
 import GrassIcon from "@mui/icons-material/Grass";
+import LandscapeIcon from "@mui/icons-material/Landscape";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import ParkIcon from "@mui/icons-material/Park";
 import PetsIcon from "@mui/icons-material/Pets";
@@ -68,6 +70,16 @@ const sidebarTabs: SidebarTab[][] = [
       icon: <ElectricBoltIcon />,
     },
     {
+      title: "Air",
+      to: "/air",
+      icon: <AirIcon />,
+    },
+    {
+      title: "Earth",
+      to: "/earth",
+      icon: <LandscapeIcon />,
+    },
+    {
       title: "Light",
       to: "/light",
       icon: <FlareIcon />,
@@ -90,8 +102,8 @@ const sidebarTabs: SidebarTab[][] = [
       ],
     },
     {
-      title: "Physics",
-      to: "/physics",
+      title: "Physical",
+      to: "/physical",
       icon: <FaSvgIcon icon={faHandFist} />,
       children: [
         {
@@ -115,14 +127,14 @@ type SidebarProviderProps = Omit<ProviderProps<SidebarContextType>, "value">;
 function SidebarProvider(props: SidebarProviderProps) {
   const theme = useTheme();
   const [sidebarWidth] = useState<number>(theme.constants.sidebarWidth);
-  const { mdAndUp } = useContext(BreakpointsContext);
+  const { lgAndUp } = useContext(BreakpointsContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarPinned, setSidebarPinned] = useState(false);
   const [miniSidebarWidth] = useState<number>(theme.constants.miniSidebarWidth);
   const [sidebarVariant, setSidebarVariant] = useState<SwipeableDrawerProps["variant"]>();
   const [sidebarHovered, setSidebarHovered] = useState(false);
   const { mobile } = useContext(InfoContext);
-  const displayAsDesktop = mdAndUp && !mobile;
+  const displayAsDesktop = lgAndUp && !mobile;
   const sidebarState: SidebarState = displayAsDesktop
     ? sidebarPinned
       ? "permanent"
@@ -134,14 +146,14 @@ function SidebarProvider(props: SidebarProviderProps) {
   document.body.style.setProperty("--sidebar-current-width", `${sidebarCurrentWidth}px`);
 
   const setSidebarOpenWrapper = (value: boolean) => {
-    // can not close sidebar on mdAndUp breakpoint
+    // can not close sidebar on lgAndUp breakpoint
     if (!displayAsDesktop) {
       setSidebarOpen(value);
     }
   };
 
   useEffect(() => {
-    // sidebar always show on mdAndUp breakpoint
+    // sidebar always show on lgAndUp breakpoint
     setSidebarOpen(displayAsDesktop);
 
     const variant: SwipeableDrawerProps["variant"] = displayAsDesktop ? "permanent" : "temporary";

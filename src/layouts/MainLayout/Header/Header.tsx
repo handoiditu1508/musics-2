@@ -79,7 +79,7 @@ export default function Header({ ref }: { ref?: React.Ref<HTMLDivElement>; }) {
               elevation={4}
               color="inherit"
               sx={{
-                borderRadius: { md: 2 },
+                borderRadius: { lg: 2 },
                 boxShadow: shadowHeaderTrigger ? undefined : "none",
               }}>
               <Toolbar>

@@ -20,8 +20,8 @@ function InnerMainLayout() {
         sx={{
           boxShadow: "none",
           overflow: "auto",
-          backgroundColor: { md: theme.palette.background.default },
-          backgroundImage: { md: "none" },
+          backgroundColor: { lg: theme.palette.background.default },
+          backgroundImage: { lg: "none" },
         }}>{/* background for app */}
         <Header />
         <Sidebar />
@@ -42,9 +42,9 @@ function InnerMainLayout() {
             minHeight: "calc(100vh - var(--header-client-height))",
           }}>{/* spacing between sidebar & header */}
           <LayoutContainer sx={{
-            paddingY: { md: 4 },
+            paddingY: { lg: 4 },
             flexGrow: 1,
-            display: { md: "flex" },
+            display: { lg: "flex" },
           }}>{/* center content & limit content size */}
             <Paper
               square={smAndDown}

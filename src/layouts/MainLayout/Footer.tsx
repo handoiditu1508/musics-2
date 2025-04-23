@@ -34,6 +34,14 @@ const navigatesList: { text: string; link: string; }[] = [
     link: "/electricity",
   },
   {
+    text: "Air",
+    link: "/air",
+  },
+  {
+    text: "Earth",
+    link: "/earth",
+  },
+  {
     text: "Light",
     link: "/light",
   },
@@ -50,8 +58,8 @@ const navigatesList: { text: string; link: string; }[] = [
     link: "/magic/necromancy",
   },
   {
-    text: "Physics",
-    link: "/physics",
+    text: "Physical",
+    link: "/physical",
   },
   {
     text: "Knight",
@@ -61,14 +69,14 @@ const navigatesList: { text: string; link: string; }[] = [
 
 const Footer = styled(({ component = "footer", ...props }: BoxProps) => {
   const { t } = useTranslation();
-  const { xs, smAndUp, mdAndUp } = useContext(BreakpointsContext);
+  const { xs, smAndUp, lgAndUp } = useContext(BreakpointsContext);
   const year = new Date().getFullYear();
 
   return (
     <Box component={component} {...props}>
       <Paper square>
         <Grid2 container spacing={3}>
-          <Grid2 size={{ xs: 12, md: 4 }}>
+          <Grid2 size={{ xs: 12, lg: 4 }}>
             <Stack direction="row">
               <Box>
                 <img src={logo} alt="logo" width={100} height={100} />
@@ -83,18 +91,18 @@ const Footer = styled(({ component = "footer", ...props }: BoxProps) => {
               </Box>
             </Stack>
           </Grid2>
-          <Grid2 container size={{ xs: 12, md: 8 }}>
-            <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography className="title" variant="h5" textAlign={{ xs: "center", md: "start" }}>{t("Navigates")}</Typography>
+          <Grid2 container size={{ xs: 12, lg: 8 }}>
+            <Grid2 size={{ xs: 12, lg: 6 }}>
+              <Typography className="title" variant="h5" textAlign={{ xs: "center", lg: "start" }}>{t("Navigates")}</Typography>
             </Grid2>
-            {mdAndUp && <Grid2 size={6} />}
+            {lgAndUp && <Grid2 size={6} />}
             <Grid2 size={{ xs: 12, sm: 6 }}>
-              <Stack alignItems={{ xs: "center", md: "flex-start" }}>
+              <Stack alignItems={{ xs: "center", lg: "flex-start" }}>
                 {navigatesList.slice(0, smAndUp ? (Math.ceil(navigatesList.length / 2)) : undefined).map((nav) => <CustomLink key={nav.text} to={nav.link} underline="hover" variant="body1">{t(nav.text)}</CustomLink>)}
               </Stack>
             </Grid2>
             {smAndUp && <Grid2 size={6}>
-              <Stack alignItems={{ xs: "center", md: "flex-start" }}>
+              <Stack alignItems={{ xs: "center", lg: "flex-start" }}>
                 {navigatesList.slice(Math.ceil(navigatesList.length / 2)).map((nav) => <CustomLink key={nav.text} to={nav.link} underline="hover" variant="body1">{t(nav.text)}</CustomLink>)}
               </Stack>
             </Grid2>}
