@@ -1,7 +1,7 @@
 import { formatSeconds } from "@/common/formats";
 import { BreakpointsContext, lgAndUpMediaQuery, mdAndDownMediaQuery, smAndUpMediaQuery, xsMediaQuery } from "@/contexts/breakpoints";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectSelectedAudioFile, selectVolume, setCurrentTimeout, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectNextAudioFile, selectPreviousAudioFile, selectSelectedAudioFile, selectVolume, setCurrentTimeout, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -28,6 +28,8 @@ function AudioPlayer() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const playButtonTitle = isPlaying ? "Pause" : "Play";
   const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
+  const nextAudioFile = useAppSelector(selectNextAudioFile);
+  const prevAudioFile = useAppSelector(selectPreviousAudioFile);
   const isShuffled = useAppSelector(selectIsAudioFilesShuffled);
   const audioDuration = selectedAudioFile ? selectedAudioFile.duration : 0;
   const audioRef = useRef<HTMLAudioElement>({} as HTMLAudioElement);
@@ -241,7 +243,7 @@ function AudioPlayer() {
             onChange={handleShuffleChange}
           />
         </Tooltip>
-        <Tooltip title="Previous" placement="top">
+        <Tooltip title={prevAudioFile ? prevAudioFile.title : "Previous"} placement="top">
           <IconButton aria-label="Previous" onClick={handlePreviousButtonClick}>
             <SkipPreviousIcon />
           </IconButton>
@@ -267,7 +269,7 @@ function AudioPlayer() {
             <Forward10Icon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Next" placement="top">
+        <Tooltip title={nextAudioFile ? nextAudioFile.title : "Next"} placement="top">
           <IconButton aria-label="Next" onClick={handleNextButtonClick}>
             <SkipNextIcon />
           </IconButton>
