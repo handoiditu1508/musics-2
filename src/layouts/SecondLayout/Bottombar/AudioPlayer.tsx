@@ -7,6 +7,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import RepeatOnIcon from "@mui/icons-material/RepeatOn";
+import ReplayIcon from "@mui/icons-material/Replay";
 import Replay10Icon from "@mui/icons-material/Replay10";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import ShuffleOnIcon from "@mui/icons-material/ShuffleOn";
@@ -95,6 +96,8 @@ function AudioPlayer() {
   };
 
   const handleEnded: ReactEventHandler<HTMLAudioElement> = () => {
+    setCurrentTime(audioDuration);
+
     if (isAutoPlay) {
       if (isLastInList && !isRepeat) {
         return;
@@ -250,7 +253,13 @@ function AudioPlayer() {
         </Tooltip>
         <Tooltip title={playButtonTitle} placement="top">
           <IconButton aria-label={playButtonTitle} color="primary" size="large" onClick={handlePlayButtonClick}>
-            {isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
+            {
+              isPlaying
+                ? <PauseIcon fontSize="inherit" />
+                : audioDuration !== 0 && audioDuration === currentTime
+                  ? <ReplayIcon fontSize="inherit" />
+                  : <PlayArrowIcon fontSize="inherit" />
+            }
           </IconButton>
         </Tooltip>
         <Tooltip title="Forward 10 seconds" placement="top">
