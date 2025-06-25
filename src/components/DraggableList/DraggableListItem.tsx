@@ -31,10 +31,12 @@ const DraggableListItem = styled(({ dragging, selected, disableHoverEffect, text
         onClick={onClick}>
         <ListItemText
           primary={text}
-          primaryTypographyProps={{
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
+          slotProps={{
+            primary: {
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+            },
           }}
         />
       </ListItemButton>

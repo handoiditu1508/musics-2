@@ -1,12 +1,13 @@
 import { formatSeconds } from "@/common/formats";
 import { BreakpointsContext, lgAndUpMediaQuery, mdAndDownMediaQuery, smAndUpMediaQuery, xsMediaQuery } from "@/contexts/breakpoints";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectSelectedAudioFile, selectVolume, setCurrentTimeout, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectNextAudioFile, selectPreviousAudioFile, selectSelectedAudioFile, selectVolume, setCurrentTimeout, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import RepeatOnIcon from "@mui/icons-material/RepeatOn";
+import ReplayIcon from "@mui/icons-material/Replay";
 import Replay10Icon from "@mui/icons-material/Replay10";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import ShuffleOnIcon from "@mui/icons-material/ShuffleOn";
@@ -27,6 +28,8 @@ function AudioPlayer() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const playButtonTitle = isPlaying ? "Pause" : "Play";
   const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
+  const nextAudioFile = useAppSelector(selectNextAudioFile);
+  const prevAudioFile = useAppSelector(selectPreviousAudioFile);
   const isShuffled = useAppSelector(selectIsAudioFilesShuffled);
   const audioDuration = selectedAudioFile ? selectedAudioFile.duration : 0;
   const audioRef = useRef<HTMLAudioElement>({} as HTMLAudioElement);
@@ -54,6 +57,12 @@ function AudioPlayer() {
   const handlePlayButtonClick = () => {
     if (audioRef.current.paused) {
       if (audioRef.current.currentSrc) {
+        // clear next song timeout (if any)
+        clearTimeout(nextSongTimeoutId.current);
+        dispatch(setCurrentTimeout({
+          duration: 0,
+        }));
+
         audioRef.current.play().catch(handlePlayAbortError);
       }
     } else {
@@ -89,6 +98,8 @@ function AudioPlayer() {
   };
 
   const handleEnded: ReactEventHandler<HTMLAudioElement> = () => {
+    setCurrentTime(audioDuration);
+
     if (isAutoPlay) {
       if (isLastInList && !isRepeat) {
         return;
@@ -232,7 +243,7 @@ function AudioPlayer() {
             onChange={handleShuffleChange}
           />
         </Tooltip>
-        <Tooltip title="Previous" placement="top">
+        <Tooltip title={prevAudioFile ? prevAudioFile.title : "Previous"} placement="top">
           <IconButton aria-label="Previous" onClick={handlePreviousButtonClick}>
             <SkipPreviousIcon />
           </IconButton>
@@ -244,7 +255,13 @@ function AudioPlayer() {
         </Tooltip>
         <Tooltip title={playButtonTitle} placement="top">
           <IconButton aria-label={playButtonTitle} color="primary" size="large" onClick={handlePlayButtonClick}>
-            {isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
+            {
+              isPlaying
+                ? <PauseIcon fontSize="inherit" />
+                : audioDuration !== 0 && audioDuration === currentTime
+                  ? <ReplayIcon fontSize="inherit" />
+                  : <PlayArrowIcon fontSize="inherit" />
+            }
           </IconButton>
         </Tooltip>
         <Tooltip title="Forward 10 seconds" placement="top">
@@ -252,7 +269,7 @@ function AudioPlayer() {
             <Forward10Icon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Next" placement="top">
+        <Tooltip title={nextAudioFile ? nextAudioFile.title : "Next"} placement="top">
           <IconButton aria-label="Next" onClick={handleNextButtonClick}>
             <SkipNextIcon />
           </IconButton>

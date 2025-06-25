@@ -109,10 +109,12 @@ const Sidebar = () => {
             </ListItemIcon>
             <ListItemText
               primary={CONFIG.APP_NAME}
-              primaryTypographyProps={{
-                color: "primary",
-                variant: "h6",
-                textTransform: "none",
+              slotProps={{
+                primary: {
+                  color: "primary",
+                  variant: "h6",
+                  textTransform: "none",
+                },
               }}
             />
           </CustomButton>

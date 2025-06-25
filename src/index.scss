@@ -7,7 +7,7 @@
   margin: 0;
   font-family: Roboto, Helvetica, Arial, sans-serif;
 
-  &:not(ul) {
+  &:not(ul):not(ol) {
     padding: 0;
   }
 }

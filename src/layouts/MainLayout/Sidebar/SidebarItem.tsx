@@ -1,14 +1,16 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, useTheme } from "@mui/material";
-import { JSX, useState } from "react";
+import { JSX, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, To, useMatch, useResolvedPath } from "react-router-dom";
+import { Link, To } from "react-router-dom";
+import SidebarContext from "./SidebarContext";
 
 export type SidebarTab = {
   title: string;
-  to: To;
+  to?: To;
   icon?: JSX.Element;
   children?: SidebarTab[];
+  hashPath: string;
 };
 
 type SidebarItemProps = {
@@ -20,14 +22,15 @@ type SidebarItemProps = {
 export default function SidebarItem({ sidebarTab, level = 0, hideChilds }: SidebarItemProps) {
   const { t } = useTranslation();
   const theme = useTheme();
+  const { currentSidebarTab } = useContext(SidebarContext);
   const [leftPadding] = useState<number>(theme.constants.sidebarLeftPadding || 0);
-  const resolved = useResolvedPath(sidebarTab.to);
-  const fullyMatch = useMatch({ path: resolved.pathname, end: true });
-  const partialMatch = useMatch({ path: resolved.pathname, end: false });
+  // const fullyMatch = currentSidebarTab === sidebarTab;
+  const partialMatch = !!currentSidebarTab && currentSidebarTab.hashPath.startsWith(sidebarTab.hashPath);
   const [open, setOpen] = useState<boolean>(!!partialMatch);
 
   const handleClickItem = () => {
     setOpen(!open);
+    window.scrollTo({ top: 0 });
   };
 
   const handleClickExpandIcon: React.MouseEventHandler<SVGSVGElement> = (event) => {
@@ -39,7 +42,14 @@ export default function SidebarItem({ sidebarTab, level = 0, hideChilds }: Sideb
   return (
     <>
       <ListItem>
-        <ListItemButton component={Link} selected={!!fullyMatch} to={sidebarTab.to} style={{ paddingLeft: leftPadding + (level * theme.constants.scalingFactor) }} onClick={handleClickItem}>
+        <ListItemButton
+          {...(sidebarTab.to && {
+            component: Link,
+            to: sidebarTab.to,
+          })}
+          selected={!!partialMatch}
+          style={{ paddingLeft: leftPadding + (level * theme.constants.scalingFactor) }}
+          onClick={handleClickItem}>
           {sidebarTab.icon && <ListItemIcon>
             {sidebarTab.icon}
           </ListItemIcon>}

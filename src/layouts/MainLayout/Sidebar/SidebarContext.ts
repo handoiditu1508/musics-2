@@ -19,6 +19,7 @@ export type SidebarContextType = {
   sidebarHovered: boolean;
   setSidebarHovered: (sidebarHovered: boolean) => void;
   sidebarTabs: SidebarTab[][];
+  currentSidebarTab?: SidebarTab | null;
 };
 const SidebarContext = React.createContext<SidebarContextType>({} as SidebarContextType);
 

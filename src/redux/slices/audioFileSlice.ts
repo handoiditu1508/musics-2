@@ -67,62 +67,10 @@ export const audioFilesSlice = createSlice({
       }
     },
     nextAudio: (state) => {
-      // empty list
-      if (state.orderedIds.length === 0) {
-        return;
-      }
-
-      // no id selected
-      if (state.selectedId === undefined) {
-        state.selectedId = state.orderedIds[0];
-
-        return;
-      }
-
-      const currentIndex = state.orderedIds.indexOf(state.selectedId);
-
-      // selected id not exist
-      if (currentIndex === -1) {
-        return;
-      }
-
-      // selected id is last in the list
-      if (currentIndex === state.orderedIds.length - 1) {
-        state.selectedId = state.orderedIds[0];
-
-        return;
-      }
-
-      state.selectedId = state.orderedIds[currentIndex + 1];
+      state.selectedId = getNextAudioFileId(state);
     },
     previousAudio: (state) => {
-      // empty list
-      if (state.orderedIds.length === 0) {
-        return;
-      }
-
-      // no id selected
-      if (state.selectedId === undefined) {
-        state.selectedId = state.orderedIds.at(-1);
-
-        return;
-      }
-
-      const currentIndex = state.orderedIds.indexOf(state.selectedId);
-
-      // selected id not exist
-      if (currentIndex === -1) {
-        return;
-      }
-
-      // selected id is first in the list
-      if (currentIndex === 0) {
-        state.selectedId = state.orderedIds.at(-1);
-
-        return;
-      }
-
-      state.selectedId = state.orderedIds[currentIndex - 1];
+      state.selectedId = getPreviousAudioFileId(state);
     },
     updateQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
@@ -275,6 +223,58 @@ const queryAudioFiles = (state: AudioFilesState) => {
   }
 };
 
+const getNextAudioFileId = (state: AudioFilesState): number | undefined => {
+  // empty list
+  if (state.orderedIds.length === 0) {
+    return undefined;
+  }
+
+  // no id selected
+  if (state.selectedId === undefined) {
+    return state.orderedIds[0];
+  }
+
+  const currentIndex = state.orderedIds.indexOf(state.selectedId);
+
+  // selected id not exist
+  if (currentIndex === -1) {
+    return undefined;
+  }
+
+  // selected id is last in the list
+  if (currentIndex === state.orderedIds.length - 1) {
+    return state.orderedIds[0];
+  }
+
+  return state.orderedIds[currentIndex + 1];
+};
+
+const getPreviousAudioFileId = (state: AudioFilesState): number | undefined => {
+  // empty list
+  if (state.orderedIds.length === 0) {
+    return undefined;
+  }
+
+  // no id selected
+  if (state.selectedId === undefined) {
+    return state.orderedIds.at(-1);
+  }
+
+  const currentIndex = state.orderedIds.indexOf(state.selectedId);
+
+  // selected id not exist
+  if (currentIndex === -1) {
+    return undefined;
+  }
+
+  // selected id is first in the list
+  if (currentIndex === 0) {
+    return state.orderedIds.at(-1);
+  }
+
+  return state.orderedIds[currentIndex - 1];
+};
+
 export const {
   updateAudioFiles,
   updateSelectedAudioFileId,
@@ -312,3 +312,13 @@ export const selectMuted = (state: RootState) => state.audioFiles.muted;
 export const selectCooldownTime = (state: RootState) => state.audioFiles.cooldownTime;
 export const selectCurrentTimeoutId = (state: RootState) => state.audioFiles.currentTimeoutId;
 export const selectCurrentTimeoutDuration = (state: RootState) => state.audioFiles.currentTimeoutDuration;
+export const selectNextAudioFile = (state: RootState) => {
+  const nextId = getNextAudioFileId(state.audioFiles);
+
+  return nextId ? audioFilesSelectors.selectById(state, nextId) : undefined;
+};
+export const selectPreviousAudioFile = (state: RootState) => {
+  const previousId = getPreviousAudioFileId(state.audioFiles);
+
+  return previousId ? audioFilesSelectors.selectById(state, previousId) : undefined;
+};

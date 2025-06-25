@@ -14,7 +14,12 @@
   "Water": "Nước",
   "Ice": "Băng",
   "Electricity": "Điện",
+  "Air": "Khí",
+  "Earth": "Đất",
   "Light": "Ánh Sáng",
   "Shadow": "Bóng Tối",
-  "Magic": "Phép Thuật"
+  "Magic": "Phép Thuật",
+  "Necromancy": "Gọi Hồn",
+  "Physical": "Vật Lý",
+  "Knight": "Hiệp Sĩ"
 }
