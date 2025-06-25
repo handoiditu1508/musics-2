@@ -54,6 +54,12 @@ function AudioPlayer() {
   const handlePlayButtonClick = () => {
     if (audioRef.current.paused) {
       if (audioRef.current.currentSrc) {
+        // clear next song timeout (if any)
+        clearTimeout(nextSongTimeoutId.current);
+        dispatch(setCurrentTimeout({
+          duration: 0,
+        }));
+
         audioRef.current.play().catch(handlePlayAbortError);
       }
     } else {
