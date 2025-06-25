@@ -14,7 +14,12 @@
   "Water": "Water",
   "Ice": "Ice",
   "Electricity": "Electricity",
+  "Air": "Air",
+  "Earth": "Earth",
   "Light": "Light",
   "Shadow": "Shadow",
-  "Magic": "Magic"
+  "Magic": "Magic",
+  "Necromancy": "Necromancy",
+  "Physical": "Physical",
+  "Knight": "Knight"
 }
