@@ -26,7 +26,6 @@ const handlePlayAbortError = (error: Error) => {
 function AudioPlayer() {
   const theme = useTheme();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const playButtonTitle = isPlaying ? "Pause" : "Play";
   const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
   const nextAudioFile = useAppSelector(selectNextAudioFile);
   const prevAudioFile = useAppSelector(selectPreviousAudioFile);
@@ -44,6 +43,9 @@ function AudioPlayer() {
   const cooldownTime = useAppSelector(selectCooldownTime);
   const nextSongTimeoutId = useRef<string | number>(undefined);
   const { smAndUp } = useContext(BreakpointsContext);
+  const playButtonTitle = isPlaying
+    ? "Pause"
+    : (audioDuration !== 0 && audioDuration === currentTime ? "Replay" : "Play");
   const dispatch = useAppDispatch();
 
   const handleShuffleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
