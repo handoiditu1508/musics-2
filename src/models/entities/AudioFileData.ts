@@ -5,6 +5,7 @@ type AudioFileData = {
   artists: string[];
   size: number;
   duration: number;
+  lyricsFile?: string;
 };
 
 export default AudioFileData;

@@ -25,7 +25,7 @@ function SecondLayout() {
         square
         sx={{
           flex: 1,
-          minHeight: "100vh",
+          height: "100vh",
           paddingBottom: `${bottomHeight}px`,
           paddingTop: "var(--mui-constants-headerHeight)",
           boxSizing: "border-box",
@@ -33,7 +33,11 @@ function SecondLayout() {
             paddingTop: "var(--mui-constants-xsHeaderHeight)",
           },
         }}>{/* background color for body */}
-        <Box>{/* container to hide away padding bottom */}
+        <Box sx={{
+          height: "100%",
+          overflowY: "auto",
+          ...theme.mixins.scrollbar,
+        }}>{/* container to hide away padding bottom */}
           <Suspense>
             <Outlet />
           </Suspense>
