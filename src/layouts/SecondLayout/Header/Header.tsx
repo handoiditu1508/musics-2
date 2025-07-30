@@ -11,7 +11,7 @@ import NextSongTimeoutProgress from "../NextSongTimeoutProgress";
 function Header() {
   const theme = useTheme();
   const sidebarOpen = useAppSelector(selectSidebarOpen);
-  const { xs } = useContext(BreakpointsContext);
+  const { xsAndDown } = useContext(BreakpointsContext);
   const dispatch = useAppDispatch();
 
   return (
@@ -19,7 +19,7 @@ function Header() {
       elevation={3}
       color="inherit"
       sx={[
-        xs && sidebarOpen && {
+        xsAndDown && sidebarOpen && {
           zIndex: theme.zIndex.drawer + 1,
           boxShadow: "none",
         },
@@ -29,7 +29,7 @@ function Header() {
           {sidebarOpen ? <MenuOpenIcon /> : <MenuIcon />}
         </IconButton>
         <Box flex={1} />
-        {xs && <NextSongTimeoutProgress />}
+        {xsAndDown && <NextSongTimeoutProgress />}
         <MiscellaneousOptions />
       </Toolbar>
     </AppBar>
