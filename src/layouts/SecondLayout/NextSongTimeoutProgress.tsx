@@ -11,7 +11,7 @@ function NextSongTimeoutProgress() {
   const [countDown, setCountDown] = useState<number>(0);
   const currentTimeoutId = useAppSelector(selectCurrentTimeoutId);
   const currentTimeoutDuration = useAppSelector(selectCurrentTimeoutDuration);
-  const { xs } = useContext(BreakpointsContext);
+  const { xsAndDown } = useContext(BreakpointsContext);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -69,12 +69,12 @@ function NextSongTimeoutProgress() {
           },
         }}
         onClick={handleCancelNextSongTimeout}>
-        <CircularProgress variant="determinate" value={progress} size={xs ? 24 : undefined} />
+        <CircularProgress variant="determinate" value={progress} size={xsAndDown ? 24 : undefined} />
         <Box sx={{
           position: "absolute",
           display: "flex",
         }}>
-          <Typography variant={xs ? "body2" : undefined}>{countDown}</Typography>
+          <Typography variant={xsAndDown ? "body2" : undefined}>{countDown}</Typography>
           <CancelIcon color="error" />
         </Box>
       </ButtonBase>
