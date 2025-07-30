@@ -28,7 +28,7 @@ function Sidebar() {
   const bottomHeight = useAppSelector(selectBottomHeight);
   const open = useAppSelector(selectSidebarOpen);
   const dispatch = useAppDispatch();
-  const { xs, lgAndUp } = useContext(BreakpointsContext);
+  const { xsAndDown, lgAndUp } = useContext(BreakpointsContext);
   const togglingCss = lgAndUp ? (open ? openedMixin(theme, sidebarWidth) : closedMixin(theme)) : CONFIG.EMPTY_OBJECT;
 
   return (
@@ -83,24 +83,24 @@ function Sidebar() {
       <Drawer
         open={open}
         variant={lgAndUp ? "permanent" : "temporary"}
-        anchor={xs ? "bottom" : "left"}
+        anchor={xsAndDown ? "bottom" : "left"}
         sx={[
           togglingCss,
-          xs && {
+          xsAndDown && {
             width: "100%",
           },
         ]}
         PaperProps={{
           sx: [
             togglingCss,
-            xs && {
+            xsAndDown && {
               width: "100%",
               height: "calc(100% - var(--mui-constants-xsHeaderHeight))",
             },
           ],
           elevation: 3,
         }}
-        hideBackdrop={xs}
+        hideBackdrop={xsAndDown}
         onClose={() => dispatch(toggleSidebar(false))}>
         <SidebarTabs />
       </Drawer>
