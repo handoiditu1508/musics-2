@@ -14,7 +14,13 @@ import ShuffleIcon from "@mui/icons-material/Shuffle";
 import ShuffleOnIcon from "@mui/icons-material/ShuffleOn";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
-import { Box, Checkbox, IconButton, IconButtonOwnProps, Slider, Tooltip, Typography, sliderClasses, useTheme } from "@mui/material";
+import Box from "@mui/material/Box";
+import Checkbox from "@mui/material/Checkbox";
+import IconButton, { IconButtonOwnProps } from "@mui/material/IconButton";
+import Slider, { sliderClasses } from "@mui/material/Slider";
+import { useTheme } from "@mui/material/styles";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import { CSSProperties, ReactEventHandler, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import NextSongTimeoutProgress from "../NextSongTimeoutProgress";
 
@@ -338,7 +344,7 @@ function AudioPlayer() {
           } as CSSProperties}
           sx={{
             [`.${sliderClasses.rail}`]: {
-              backgroundColor: theme.palette.Slider.primaryTrack,
+              backgroundColor: theme.vars.palette.Slider.primaryTrack,
               "::before": {
                 height: "inherit",
                 position: "absolute",
@@ -347,7 +353,7 @@ function AudioPlayer() {
                 width: "var(--bufferedPercent)",
                 borderRadius: "inherit",
                 transform: "inherit",
-                backgroundColor: theme.palette.primary.main,
+                backgroundColor: theme.vars.palette.primary.main,
               },
             },
             [`.${sliderClasses.thumb}`]: {

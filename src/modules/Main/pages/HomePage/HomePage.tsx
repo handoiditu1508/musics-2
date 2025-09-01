@@ -2,7 +2,10 @@ import { formatBytes, formatSeconds } from "@/common/formats";
 import { useAppSelector } from "@/hooks";
 import { useGetLyricsQuery } from "@/redux/apis/audioFileApi";
 import { selectSelectedAudioFile } from "@/redux/slices/audioFileSlice";
-import { Box, Skeleton, styled, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Skeleton from "@mui/material/Skeleton";
+import { styled } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 
 const StyledTable = styled("table")(({ theme }) => ({
   maxWidth: 400,
