@@ -3,7 +3,9 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectBottomHeight, selectTabValue, updateTabValue } from "@/redux/slices/secondLayoutSlice";
 import { faFaceKissWinkHeart } from "@fortawesome/free-solid-svg-icons/faFaceKissWinkHeart";
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
-import { Box, Tab, TabProps, Tabs } from "@mui/material";
+import Box from "@mui/material/Box";
+import Tab, { TabProps } from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import ArtistsTabPanel from "./ArtistsTabPanel";
 import SongsTabPanel from "./SongsTabPanel";
 

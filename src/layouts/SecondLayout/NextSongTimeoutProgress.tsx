@@ -2,7 +2,13 @@ import { BreakpointsContext, smAndUpMediaQuery } from "@/contexts/breakpoints";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectCurrentTimeoutDuration, selectCurrentTimeoutId, setCurrentTimeout } from "@/redux/slices/audioFileSlice";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { Box, ButtonBase, CircularProgress, Fade, svgIconClasses, Typography, typographyClasses, useTheme } from "@mui/material";
+import Box from "@mui/material/Box";
+import ButtonBase from "@mui/material/ButtonBase";
+import CircularProgress from "@mui/material/CircularProgress";
+import Fade from "@mui/material/Fade";
+import { useTheme } from "@mui/material/styles";
+import { svgIconClasses } from "@mui/material/SvgIcon";
+import Typography, { typographyClasses } from "@mui/material/Typography";
 import { useContext, useEffect, useState } from "react";
 
 function NextSongTimeoutProgress() {

@@ -7,7 +7,19 @@ import ClearIcon from "@mui/icons-material/Clear";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, Button, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemText, Skeleton, styled, TextField, Tooltip, Typography, useTheme } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Skeleton from "@mui/material/Skeleton";
+import { styled, useTheme } from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import { ChangeEventHandler, ReactNode, useDeferredValue, useEffect, useRef, useState } from "react";
@@ -65,8 +77,8 @@ function CustomListItem(props: ListChildComponentProps) {
         component="span"
         sx={[
           part.highlight && {
-            color: theme.palette.primary.contrastText,
-            backgroundColor: theme.palette.primary.light,
+            color: theme.vars.palette.primary.contrastText,
+            backgroundColor: theme.vars.palette.primary.light,
           },
         ]}>
         {part.text}

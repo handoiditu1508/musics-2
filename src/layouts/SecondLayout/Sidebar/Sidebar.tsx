@@ -2,7 +2,10 @@ import CONFIG from "@/configs";
 import { BreakpointsContext, lgAndUpMediaQuery } from "@/contexts/breakpoints";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { selectBottomHeight, selectSidebarOpen, selectSidebarWidth, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
-import { Box, ButtonBase, CSSObject, Drawer, Theme, useTheme } from "@mui/material";
+import Box from "@mui/material/Box";
+import ButtonBase from "@mui/material/ButtonBase";
+import Drawer from "@mui/material/Drawer";
+import { CSSObject, Theme, useTheme } from "@mui/material/styles";
 import { useContext } from "react";
 import SidebarTabs from "./SidebarTabs";
 
@@ -65,7 +68,7 @@ function Sidebar() {
         ]}
         onClick={() => dispatch(toggleSidebar())}>
         <Box sx={{
-          borderLeft: `14px solid ${theme.palette.scrollbar.hover.track}`,
+          borderLeft: `14px solid ${theme.vars.palette.scrollbar.hover.track}`,
           borderTop: "5px solid transparent",
           borderBottom: "5px solid transparent",
           height: 60,
@@ -90,15 +93,17 @@ function Sidebar() {
             width: "100%",
           },
         ]}
-        PaperProps={{
-          sx: [
-            togglingCss,
-            xsAndDown && {
-              width: "100%",
-              height: "calc(100% - var(--mui-constants-xsHeaderHeight))",
-            },
-          ],
-          elevation: 3,
+        slotProps={{
+          paper: {
+            sx: [
+              togglingCss,
+              xsAndDown && {
+                width: "100%",
+                height: "calc(100% - var(--mui-constants-xsHeaderHeight))",
+              },
+            ],
+            elevation: 3,
+          },
         }}
         hideBackdrop={xsAndDown}
         onClose={() => dispatch(toggleSidebar(false))}>

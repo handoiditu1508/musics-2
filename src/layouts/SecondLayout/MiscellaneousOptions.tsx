@@ -11,7 +11,24 @@ import VolumeDownIcon from "@mui/icons-material/VolumeDown";
 import VolumeMuteIcon from "@mui/icons-material/VolumeMute";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fade, IconButton, OutlinedInput, Paper, Popper, Slider, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useColorScheme, useTheme } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Fade from "@mui/material/Fade";
+import IconButton from "@mui/material/IconButton";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Paper from "@mui/material/Paper";
+import Popper from "@mui/material/Popper";
+import Slider from "@mui/material/Slider";
+import { useColorScheme, useTheme } from "@mui/material/styles";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import { ChangeEventHandler, MouseEventHandler, useContext, useId, useState } from "react";
 
 const getVolumeIcon = (volume: number, muted: boolean) => {
@@ -188,7 +205,7 @@ function MiscellaneousOptions() {
               <Box
                 component="tr"
                 sx={{
-                  borderBottom: `1px solid ${theme.palette.divider}`,
+                  borderBottom: `1px solid ${theme.vars.palette.divider}`,
                   td: { paddingBottom: 1 },
                 }}>
                 <Box component="td" sx={{ paddingRight: 1 }}>
