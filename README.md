@@ -115,6 +115,21 @@ i18n
 
 ## Deploy to github pages
 
+### Switch to deployment branch
+
+```bash
+git switch github-pages
+git pull origin master
+```
+
+### Pull latest code changes from master
+
+```bash
+git pull origin master
+```
+
+### Build and deploy
+
 ```bash
 npm run predeploy
 npm run deploy
