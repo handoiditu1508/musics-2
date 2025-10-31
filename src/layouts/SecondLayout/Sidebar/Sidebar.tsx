@@ -53,19 +53,19 @@ function Sidebar() {
       ]}>
       {lgAndUp && <ButtonBase
         className="toggle-sidebar-btn"
-        sx={[
-          {
-            position: "absolute",
-            right: -14,
-            top: 150,
-            zIndex: theme.zIndex.drawer + 1,
-            width: 14,
-            height: 60,
+        sx={{
+          position: "absolute",
+          right: -14,
+          top: 150,
+          zIndex: theme.zIndex.drawer + 1,
+          width: 14,
+          height: 60,
+          ["@media (hover: hover)"]: {
+            ...(open && {
+              opacity: 0,
+            }),
           },
-          (open && {
-            opacity: 0,
-          }),
-        ]}
+        }}
         onClick={() => dispatch(toggleSidebar())}>
         <Box sx={{
           borderLeft: `14px solid ${theme.vars.palette.scrollbar.hover.track}`,
