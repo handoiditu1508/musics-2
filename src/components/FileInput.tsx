@@ -23,7 +23,7 @@ const StyledStack = styled(Stack, { shouldForwardProp: (prop) => !(["status", "e
   border: theme.vars.shape.largeBorder,
   borderColor: error ? theme.vars.palette.error.main : theme.vars.palette.primary.main,
   borderStyle: "dashed",
-  borderRadius: `calc(${theme.vars.shape.borderRadius} * 2)`,
+  borderRadius: 2,
   padding: theme.spacing(1),
   display: "inline-flex",
   position: "relative",
@@ -138,7 +138,7 @@ function FileInput({ files, inputProps, dropzonePlaceholder, inputPlaceholder, e
     if (element) {
       hiddenFileInputRef.current = element;
       if (inputProps && inputProps.ref) {
-        (inputProps.ref as React.MutableRefObject<HTMLInputElement>).current = element;
+        (inputProps.ref as React.RefObject<HTMLInputElement>).current = element;
       }
     }
   };
