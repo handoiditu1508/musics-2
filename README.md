@@ -113,6 +113,28 @@ i18n
 
 *Content of `src/i18n.ts`.*
 
+### Change app name and title
+
+Replace `React Template` with your app name.
+
+```typescript
+const defaultConfig: ConfigType = {
+  APP_NAME: "React Template",
+  // existed code
+};
+```
+
+*Content of `src\configs\config.ts`*
+
+```html
+<head>
+  <!-- existed code -->
+  <title>React Template</title>
+</head>
+```
+
+*Content of `index.html`*
+
 ## Deploy to github pages
 
 ### Switch to deployment branch
