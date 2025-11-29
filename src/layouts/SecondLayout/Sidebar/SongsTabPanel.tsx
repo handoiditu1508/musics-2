@@ -130,7 +130,7 @@ function CustomListItem(props: ListChildComponentProps) {
       <ListItemButton
         selected={selectedId === audioFile.id}
         onClick={() => dispatch(updateSelectedAudioFileId(audioFile.id))}>
-        <Tooltip title={audioFile.name} placement="right" arrow>
+        <Tooltip title={audioFile.name} placement="auto" arrow>
           <ListItemText
             primary={itemText}
             slotProps={{
