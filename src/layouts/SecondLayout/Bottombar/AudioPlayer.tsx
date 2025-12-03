@@ -175,6 +175,11 @@ function AudioPlayer() {
   };
 
   const handlePreviousButtonClick = () => {
+    if (audioRef.current.currentTime > 3) {
+      audioRef.current.currentTime = 0;
+
+      return;
+    }
     dispatch(previousAudio());
   };
 
