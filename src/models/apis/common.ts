@@ -20,6 +20,7 @@ export type Problem = {
   code: string;
   group: number;
   message: string;
+  data: Record<string, unknown | null>;
 };
 
 export const isValidationProblemDetails = (error: KnownApiError): error is ValidationProblemDetails => "errors" in error;
