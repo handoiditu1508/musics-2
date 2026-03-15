@@ -8,7 +8,7 @@ const authApi = appApi.injectEndpoints({
     refreshToken: builder.mutation<LoginResponse, void>({
       queryFn: async (arg, api, _extraOptions, baseQuery) => {
         const res = await baseQuery({
-          url: "refreshToken",
+          url: "/refreshToken",
           method: "POST",
           body: arg,
         }) as QueryReturnValue<LoginResponse, FetchBaseQueryError, {} | undefined>;

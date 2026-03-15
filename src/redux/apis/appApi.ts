@@ -5,7 +5,7 @@ import { allTags } from "../utils/rtkQueryTagUtils";
 
 const appApi = createApi({
   reducerPath: "appApi",
-  baseQuery: reauthBaseQueryWrapper(axiosBaseQuery({ baseUrl: "/api/" })),
+  baseQuery: reauthBaseQueryWrapper(axiosBaseQuery({ baseUrl: "/api" })),
   tagTypes: allTags,
   endpoints: (builder) => ({
     refetchErrorQueries: builder.mutation<null, void>({
