@@ -1,17 +1,17 @@
-import SignInResponse from "@/models/apis/responses/SignInResponse";
+import { LoginResponse } from "@/models/apis/login";
 import { FetchBaseQueryError, FetchBaseQueryMeta, QueryReturnValue } from "@reduxjs/toolkit/query";
 import { clearAuthState, setAuthState } from "../slices/authSlice";
 import appApi from "./appApi";
 
 const authApi = appApi.injectEndpoints({
   endpoints: (builder) => ({
-    refreshToken: builder.mutation<SignInResponse, void>({
+    refreshToken: builder.mutation<LoginResponse, void>({
       queryFn: async (arg, api, _extraOptions, baseQuery) => {
         const res = await baseQuery({
-          url: "refreshToken",
+          url: "/refreshToken",
           method: "POST",
           body: arg,
-        }) as QueryReturnValue<SignInResponse, FetchBaseQueryError, FetchBaseQueryMeta>;
+        }) as QueryReturnValue<LoginResponse, FetchBaseQueryError, FetchBaseQueryMeta>;
 
         if (res.data) {
           api.dispatch(setAuthState(res.data));
