@@ -24,7 +24,7 @@ export const loadAuthStateFromLocalAsync = createAsyncThunk(
     const expiration = Number(localStorage.getItem(expirationStorageKey));
 
     // check token expired
-    if (expiration <= Date.now()) {
+    if (expiration && expiration <= Date.now()) {
       // call refresh token api
       const refreshTokenPromise = thunkApi.dispatch(authApi.endpoints.refreshToken.initiate());
       await refreshTokenPromise;
