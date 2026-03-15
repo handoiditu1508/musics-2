@@ -1,5 +1,5 @@
 import { LoginResponse } from "@/models/apis/login";
-import { FetchBaseQueryError, QueryReturnValue } from "@reduxjs/toolkit/query";
+import { FetchBaseQueryError, FetchBaseQueryMeta, QueryReturnValue } from "@reduxjs/toolkit/query";
 import { clearAuthState, setAuthState } from "../slices/authSlice";
 import appApi from "./appApi";
 
@@ -11,7 +11,7 @@ const authApi = appApi.injectEndpoints({
           url: "/refreshToken",
           method: "POST",
           body: arg,
-        }) as QueryReturnValue<LoginResponse, FetchBaseQueryError, {} | undefined>;
+        }) as QueryReturnValue<LoginResponse, FetchBaseQueryError, FetchBaseQueryMeta>;
 
         if (res.data) {
           api.dispatch(setAuthState(res.data));
