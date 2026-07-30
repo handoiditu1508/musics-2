@@ -21,7 +21,7 @@ import Slider, { sliderClasses } from "@mui/material/Slider";
 import { useTheme } from "@mui/material/styles";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { CSSProperties, ReactEventHandler, ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { CSSProperties, ReactEventHandler, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 import NextSongTimeoutProgress from "../NextSongTimeoutProgress";
 
 const handlePlayAbortError = (error: Error) => {
@@ -66,11 +66,11 @@ function AudioPlayer() {
   const repeatState: RepeatState = repeatStates[repeatStateIndex];
   const repeatStateData = repeatMap[repeatState];
   const audioFiles = useAppSelector(selectAudioFiles);
-  const isLastInList = selectedAudioFile === audioFiles.at(-1);
+  const isLastInList = selectedAudioFile === audioFiles[-1];
   const volume = useAppSelector(selectVolume);
   const muted = useAppSelector(selectMuted);
   const cooldownTime = useAppSelector(selectCooldownTime);
-  const nextSongTimeoutId = useRef<string | number>(undefined);
+  const nextSongTimeoutId = useRef<number>(undefined);
   const { smAndUp } = useContext(BreakpointsContext);
   const playButtonTitle = isPlaying
     ? "Pause"
@@ -91,28 +91,47 @@ function AudioPlayer() {
     repeatPersistentState.current = repeatState;
   }, [repeatState]);
 
+  const playAudio = useCallback(() => {
+    if (!audioRef.current.currentSrc) {
+      return;
+    }
+
+    // Clear the next-song timeout before resuming from either the page or the
+    // operating system's media controls.
+    clearTimeout(nextSongTimeoutId.current);
+    dispatch(setCurrentTimeout({
+      duration: 0,
+    }));
+
+    audioRef.current.play().catch(handlePlayAbortError);
+  }, [dispatch]);
+
+  const pauseAudio = useCallback(() => {
+    audioRef.current.pause();
+  }, []);
+
   const handlePlayButtonClick = () => {
     if (audioRef.current.paused) {
-      if (audioRef.current.currentSrc) {
-        // clear next song timeout (if any)
-        clearTimeout(nextSongTimeoutId.current);
-        dispatch(setCurrentTimeout({
-          duration: 0,
-        }));
-
-        audioRef.current.play().catch(handlePlayAbortError);
-      }
+      playAudio();
     } else {
-      audioRef.current.pause();
+      pauseAudio();
     }
   };
 
   const handlePlay: ReactEventHandler<HTMLAudioElement> = () => {
     setIsPlaying(true);
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = "playing";
+    }
   };
 
   const handlePause: ReactEventHandler<HTMLAudioElement> = () => {
     setIsPlaying(false);
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = "paused";
+    }
   };
 
   const handleTimeUpdate: ReactEventHandler<HTMLAudioElement> = () => {
@@ -150,7 +169,7 @@ function AudioPlayer() {
           } else {
             dispatch(nextAudio());
           }
-        }, cooldownTime) as unknown as string | number;
+        }, cooldownTime);
 
         dispatch(setCurrentTimeout({
           timeoutId: nextSongTimeoutId.current,
@@ -170,26 +189,26 @@ function AudioPlayer() {
     audioRef.current.currentTime = value as number;
   };
 
-  const handleNextButtonClick = () => {
+  const handleNextButtonClick = useCallback(() => {
     dispatch(nextAudio());
-  };
+  }, [dispatch]);
 
-  const handlePreviousButtonClick = () => {
+  const handlePreviousButtonClick = useCallback(() => {
     if (audioRef.current.currentTime > 3) {
       audioRef.current.currentTime = 0;
 
       return;
     }
     dispatch(previousAudio());
-  };
+  }, [dispatch]);
 
-  const handleReplayButtonClick = () => {
+  const handleReplayButtonClick = useCallback(() => {
     audioRef.current.currentTime = Math.max(audioRef.current.currentTime - 10, 0);
-  };
+  }, []);
 
-  const handleForwardButtonClick = () => {
+  const handleForwardButtonClick = useCallback(() => {
     audioRef.current.currentTime = Math.min(audioRef.current.currentTime + 10, audioDuration);
-  };
+  }, [audioDuration]);
 
   const handleRepeatButtonClick = () => {
     const nextIndex = (repeatStateIndex + 1) % repeatStates.length;
@@ -253,14 +272,30 @@ function AudioPlayer() {
     audioRef.current.volume = volume;
   }, [volume]);
 
-  if ("mediaSession" in navigator) {
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) {
+      return;
+    }
+
+    // Media Session actions describe the requested state. They must not share
+    // the UI's toggle handler: a delayed/repeated OS "play" event could
+    // otherwise pause an element that has already resumed.
     navigator.mediaSession.setActionHandler("nexttrack", handleNextButtonClick);
     navigator.mediaSession.setActionHandler("previoustrack", handlePreviousButtonClick);
-    navigator.mediaSession.setActionHandler("pause", handlePlayButtonClick);
-    navigator.mediaSession.setActionHandler("play", handlePlayButtonClick);
+    navigator.mediaSession.setActionHandler("pause", pauseAudio);
+    navigator.mediaSession.setActionHandler("play", playAudio);
     navigator.mediaSession.setActionHandler("seekbackward", handleReplayButtonClick);
     navigator.mediaSession.setActionHandler("seekforward", handleForwardButtonClick);
-  }
+
+    return () => {
+      navigator.mediaSession.setActionHandler("nexttrack", null);
+      navigator.mediaSession.setActionHandler("previoustrack", null);
+      navigator.mediaSession.setActionHandler("pause", null);
+      navigator.mediaSession.setActionHandler("play", null);
+      navigator.mediaSession.setActionHandler("seekbackward", null);
+      navigator.mediaSession.setActionHandler("seekforward", null);
+    };
+  }, [handleForwardButtonClick, handleNextButtonClick, handlePreviousButtonClick, handleReplayButtonClick, pauseAudio, playAudio]);
 
   return (
     <Box sx={{
@@ -380,6 +415,7 @@ function AudioPlayer() {
         <audio
           ref={audioRef}
           src={selectedAudioFile ? selectedAudioFile.path : undefined}
+          preload="auto"
           muted={muted}
           style={{ display: "none" }}
           onPlay={handlePlay}
