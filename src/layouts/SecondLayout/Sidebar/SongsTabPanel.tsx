@@ -1,6 +1,5 @@
-import SupportActionMenu from "@/components/SupportActionMenu";
+import SupportActionMenu, { SupportAction } from "@/components/SupportActionMenu";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import SupportAction from "@/models/SupportAction";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
 import { moveDown, moveUp, selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, setAsNextAudio, updateQuery, updateSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import ClearIcon from "@mui/icons-material/Clear";
