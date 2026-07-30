@@ -1,4 +1,5 @@
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import useAppDispatch from "@/hooks/useAppDispatch";
+import useAppSelector from "@/hooks/useAppSelector";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
 import { selectArtists, updateArtistQuery } from "@/redux/slices/audioFileSlice";
 import { updateTabValue } from "@/redux/slices/secondLayoutSlice";

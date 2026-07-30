@@ -1,5 +1,5 @@
-import { formatBytes, formatSeconds } from "@/common/formats";
-import { useAppSelector } from "@/hooks";
+import { formatBytes, formatSeconds } from "@/common/format";
+import useAppSelector from "@/hooks/useAppSelector";
 import { useGetLyricsQuery } from "@/redux/apis/audioFileApi";
 import { selectSelectedAudioFile } from "@/redux/slices/audioFileSlice";
 import Box from "@mui/material/Box";

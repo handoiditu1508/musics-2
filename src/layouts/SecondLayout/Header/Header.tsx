@@ -1,5 +1,6 @@
 import { BreakpointsContext } from "@/contexts/breakpoints";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import useAppDispatch from "@/hooks/useAppDispatch";
+import useAppSelector from "@/hooks/useAppSelector";
 import { selectSidebarOpen, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";

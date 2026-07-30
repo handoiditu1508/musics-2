@@ -1,6 +1,7 @@
 import CONFIG from "@/configs";
 import { BreakpointsContext, lgAndUpMediaQuery } from "@/contexts/breakpoints";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import useAppDispatch from "@/hooks/useAppDispatch";
+import useAppSelector from "@/hooks/useAppSelector";
 import { selectBottomHeight, selectSidebarOpen, selectSidebarWidth, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
 import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";

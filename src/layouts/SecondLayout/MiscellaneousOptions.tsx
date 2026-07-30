@@ -1,6 +1,7 @@
 import { lgAndUpMediaQuery } from "@/contexts/breakpoints";
 import { InfoContext } from "@/contexts/info";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import useAppDispatch from "@/hooks/useAppDispatch";
+import useAppSelector from "@/hooks/useAppSelector";
 import { selectCooldownTime, selectIsAutoPlay, selectMuted, selectVolume, setCooldownTime, setIsAutoPlay, setMuted, setVolume } from "@/redux/slices/audioFileSlice";
 import AutoModeIcon from "@mui/icons-material/AutoMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
