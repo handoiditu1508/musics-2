@@ -4,7 +4,7 @@ import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import mainRoutes from "./mainRoutes";
 
-const MainLayout = React.lazy(() => import("@/layouts/MainLayout"));
+const SecondLayout = React.lazy(() => import("@/layouts/SecondLayout"));
 const NotFoundPage = React.lazy(() => import("./NotFoundPage"));
 
 const router = createBrowserRouter([
@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     element: <AppProvider />,
     children: [
       {
-        element: <Suspense><MainLayout /></Suspense>,
+        element: <Suspense><SecondLayout /></Suspense>,
         children: [
           ...mainRoutes,
           {
