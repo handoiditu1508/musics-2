@@ -1,0 +1,1 @@
+import{j as n}from"./index-D4AWE2Ws.js";import{u as e}from"./useTranslation-DvjXv0Nl.js";function r(){const{t}=e();return n.jsx("main",{style:{padding:"1rem"},children:n.jsx("p",{children:t("page_not_found_message")})})}export{r as default};
