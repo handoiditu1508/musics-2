@@ -1,5 +1,5 @@
 import { BreakpointsContext } from "@/contexts/breakpoints";
-import { useAppSelector } from "@/hooks";
+import useAppSelector from "@/hooks/useAppSelector";
 import { selectSelectedAudioFile } from "@/redux/slices/audioFileSlice";
 import { selectBottomHeight } from "@/redux/slices/secondLayoutSlice";
 import Box from "@mui/material/Box";

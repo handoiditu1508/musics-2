@@ -21,7 +21,7 @@ export type AudioFilesState = EntityState<AudioFile, number> & {
    * Miliseconds.
    */
   cooldownTime: number;
-  currentTimeoutId?: string | number;
+  currentTimeoutId?: number;
   /**
    * Miliseconds.
    */
@@ -188,7 +188,7 @@ export const audioFilesSlice = createSlice({
       state.cooldownTime = action.payload;
     },
     setCurrentTimeout: (state, action: PayloadAction<{
-      timeoutId?: string | number;
+      timeoutId?: number;
       duration: number;
     }>) => {
       state.currentTimeoutId = action.payload.timeoutId;
@@ -257,7 +257,7 @@ const getPreviousAudioFileId = (state: AudioFilesState): number | undefined => {
 
   // no id selected
   if (state.selectedId === undefined) {
-    return state.orderedIds.at(-1);
+    return state.orderedIds[state.orderedIds.length - 1];
   }
 
   const currentIndex = state.orderedIds.indexOf(state.selectedId);
@@ -269,7 +269,7 @@ const getPreviousAudioFileId = (state: AudioFilesState): number | undefined => {
 
   // selected id is first in the list
   if (currentIndex === 0) {
-    return state.orderedIds.at(-1);
+    return state.orderedIds[state.orderedIds.length - 1];
   }
 
   return state.orderedIds[currentIndex - 1];

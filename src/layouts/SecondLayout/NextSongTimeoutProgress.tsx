@@ -1,5 +1,6 @@
 import { BreakpointsContext, smAndUpMediaQuery } from "@/contexts/breakpoints";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import useAppDispatch from "@/hooks/useAppDispatch";
+import useAppSelector from "@/hooks/useAppSelector";
 import { selectCurrentTimeoutDuration, selectCurrentTimeoutId, setCurrentTimeout } from "@/redux/slices/audioFileSlice";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";

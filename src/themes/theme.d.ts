@@ -2,7 +2,7 @@ import ColorOption from "@/models/ColorOption";
 import "@mui/material/styles";
 import { CSSProperties } from "node_modules/@mui/material/styles/createMixins";
 
-export interface ThemeConstants {
+export type ThemeConstants = {
   scalingFactor: number;
   scrollbarSize: number;
   sidebarWidth: number;
@@ -11,7 +11,7 @@ export interface ThemeConstants {
   sidebarLeftPadding: number;
   headerHeight: number;
   xsHeaderHeight: number;
-}
+};
 
 export type ScrollbarPalette = {
   hover: {
@@ -26,13 +26,21 @@ export type ScrollbarPalette = {
   };
 };
 
+export type BorderShape = {
+  smallBorder: string;
+  mediumBorder: string;
+  largeBorder: string;
+};
+
 declare module "@mui/material/styles" {
   export interface Theme {
     constants: ThemeConstants;
+    border: BorderShape;
   }
 
   export interface ThemeOptions {
     constants?: ThemeConstants;
+    border?: Partial<BorderShape>;
   }
 
   export interface Palette {
@@ -43,6 +51,10 @@ declare module "@mui/material/styles" {
   export interface PaletteOptions {
     scrollbar?: ScrollbarPalette;
     isPaletteColorOption?: (color?: string) => color is ColorOption;
+  }
+
+  export interface ThemeVars {
+    border: BorderShape;
   }
 
   export interface SimplePaletteColorOptions {
@@ -62,14 +74,6 @@ declare module "@mui/material/styles" {
 
   export interface Duration {
     long: number;
-  }
-}
-
-declare module "node_modules/@mui/system/esm/createTheme/shape" {
-  export interface Shape {
-    smallBorder: string;
-    mediumBorder: string;
-    largeBorder: string;
   }
 }
 

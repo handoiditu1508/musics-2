@@ -1,6 +1,6 @@
 import Suspense from "@/components/Suspense";
 import { BreakpointsContext, xsMediaQuery } from "@/contexts/breakpoints";
-import { useAppSelector } from "@/hooks";
+import useAppSelector from "@/hooks/useAppSelector";
 import { selectBottomHeight } from "@/redux/slices/secondLayoutSlice";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";

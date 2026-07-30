@@ -1,6 +1,6 @@
 import CONFIG from "@/configs";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { allTags } from "../utils/rtkQueryCacheUtils";
+import { allTags } from "../utils/rtkQueryTagUtils";
 
 const appApi = createApi({
   reducerPath: "appApi",

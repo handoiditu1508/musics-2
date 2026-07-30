@@ -1,5 +1,6 @@
 import FaSvgIcon from "@/components/FaSvgIcon";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import useAppDispatch from "@/hooks/useAppDispatch";
+import useAppSelector from "@/hooks/useAppSelector";
 import { selectBottomHeight, selectTabValue, updateTabValue } from "@/redux/slices/secondLayoutSlice";
 import { faFaceKissWinkHeart } from "@fortawesome/free-solid-svg-icons/faFaceKissWinkHeart";
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
