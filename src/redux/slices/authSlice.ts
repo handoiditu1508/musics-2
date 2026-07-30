@@ -10,6 +10,7 @@ export type AuthState = {
 };
 
 export const expirationStorageKey = "expiration";
+export const refreshTokenExpirationStorageKey = "refreshTokenExpiration";
 
 const initialState: AuthState = {
   expiration: null,
@@ -22,18 +23,26 @@ export const loadAuthStateFromLocalAsync = createAsyncThunk(
     const { auth: state } = thunkApi.getState() as RootState;
 
     const expiration = Number(localStorage.getItem(expirationStorageKey));
+    const isAccessTokenValid = !!expiration && expiration <= Date.now();
+    const refreshTokenExpiration = Number(localStorage.getItem(refreshTokenExpirationStorageKey));
+    const isRefreshTokenValid = !!refreshTokenExpiration && refreshTokenExpiration <= Date.now();
 
-    // check token expired
-    if (expiration && expiration <= Date.now()) {
+    if (isRefreshTokenValid) {
+      // todo: store refresh token in redux store or something
+    }
+
+    if (isAccessTokenValid) {
+      thunkApi.dispatch(setAuthExpiration(expiration));
+      if (!state.user) {
+        // todo: load signed in user details from BE
+      }
+    } else if (isRefreshTokenValid) {
       // call refresh token api
       const refreshTokenPromise = thunkApi.dispatch(authApi.endpoints.refreshToken.initiate());
       await refreshTokenPromise;
       refreshTokenPromise.reset();
     } else {
-      thunkApi.dispatch(setAuthExpiration(expiration));
-      if (!state.user) {
-        // todo: load signed in user details from BE
-      }
+      thunkApi.dispatch(clearAuthState());
     }
   }
 );
@@ -57,6 +66,24 @@ const authSlice = createSlice({
       state.expiration = null;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(
+        authApi.endpoints.refreshToken.matchFulfilled,
+        (state, action: PayloadAction<LoginResponse>) => {
+          const newAction = authSlice.actions.setAuthState(action.payload);
+          authSlice.caseReducers.setAuthState(state, newAction);
+        }
+      )
+      .addMatcher(
+        authApi.endpoints.refreshToken.matchRejected,
+        (state, action) => {
+          if (action.payload?.status === 401) {
+            authSlice.caseReducers.clearAuthState(state);
+          }
+        }
+      );
+  },
 });
 
 export const {
@@ -65,9 +92,11 @@ export const {
   clearAuthState,
 } = authSlice.actions;
 
-export const selectIsSignedIn = (state: RootState): boolean => !!state.auth.expiration;
-export const selectIsTokenExpired = (state: RootState): boolean => !!state.auth.expiration && state.auth.expiration <= Date.now();
-export const selectExpiration = (state: RootState) => state.auth.expiration;
-export const selectAuthUser = (state: RootState) => state.auth.user;
+export const authSelectors = {
+  signedIn: (state: RootState): boolean => !!state.auth.expiration,
+  tokenExpired: (state: RootState): boolean => !!state.auth.expiration && state.auth.expiration <= Date.now(),
+  expiration: (state: RootState) => state.auth.expiration,
+  user: (state: RootState) => state.auth.user,
+};
 
 export default authSlice;

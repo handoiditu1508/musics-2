@@ -1,0 +1,74 @@
+# AGENTS.md
+
+## Project overview
+
+- A React + TypeScript frontend scaffold using Vite.
+- No backend code is present in this workspace.
+
+## Tech stack
+
+- React v19
+- React Router v7
+- Redux Toolkit v2
+- MUI v7
+- TypeScript v5
+- Vite v6
+- Sass v1
+- i18next v24
+
+## Project structure
+
+- `environments/` — Placeholder `.env` envDir files.
+- `public/` — Static resources loaded directly by the browser.
+  - `public/locales/` — i18n JSON translations.
+- `src/` — Application source code.
+  - `assets/` — Resource files imported by components.
+  - `common/` — Utilities and helpers.
+  - `components/` — Reusable components.
+  - `configs/` — Configuration types and objects.
+  - `contexts/` — Global React contexts and providers.
+  - `extensions/` — TypeScript module augmentation.
+  - `features/` — Non-business supporting features (dialogs, notifications).
+  - `hocs/` — Higher order components.
+  - `hooks/` — Reusable React hooks.
+  - `layouts/` — Layout components.
+  - `models/` — Type definitions.
+  - `modules/` — Grouped app pages.
+  - `redux/` — Redux state management.
+  - `routes/` — React Router configuration.
+  - `themes/` — MUI themes.
+
+## Commands
+
+- `npm run dev` — start the local Vite development server.
+- `npm run build` — compile TypeScript and produce a production build.
+- `npm run tsc` — verify TypeScript compilation.
+- `npm run lint` — run ESLint over the repo.
+- `npm run lint:fix` — apply ESLint auto-fixes.
+- `npm run preview` — preview the production build locally.
+
+## Personas
+
+- `agents/code-agent.md`: coding persona for application development purpose.
+- `agents/eslint-agent.md`: linting persona to keep eslint plugins up to date.
+
+## Boundaries
+
+- ✅ Always do:
+  - Run `npm run lint:fix` to fix auto-fixable lint issues.
+  - Run `npm run lint` and report lint issues for generated code.
+  - Run `npm run tsc` and fix any generated code issues.
+  - Report all places where `any` is used in generated code.
+- ⚠️ Ask first:
+  - Before modifying configuration files.
+  - Before installing a new package.
+- 🚫 Never do:
+  - Commit secrets.
+  - Install non-commercially free packages.
+  - Add backend or server-side code into this frontend-only workspace.
+
+## Helpful links
+
+- `package.json` for scripts and dependencies.
+- `vite.config.ts` for alias and build settings.
+- `src/routes/router.tsx` and `src/AppProvider.tsx` for app composition.

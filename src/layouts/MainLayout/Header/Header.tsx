@@ -112,7 +112,7 @@ export default function Header({ ref }: { ref?: React.Ref<HTMLDivElement>; }) {
                     },
                   },
                 }}>
-                  <CustomLink to="/privacy-policy">{t("Privacy Policy")}</CustomLink>
+                  <CustomLink to="/privacy-policy">{t("privacy_policy")}</CustomLink>
                 </Box>}
                 <Box display="flex" justifyContent="flex-end" flexGrow={1}>
                   <IconButton color="primary" edge="end" aria-label="settings" onClick={() => setSettingsDrawerOpen(!settingsDrawerOpen)}><SettingsIcon /></IconButton>
@@ -127,7 +127,7 @@ export default function Header({ ref }: { ref?: React.Ref<HTMLDivElement>; }) {
           ...theme.typography.h6,
           paddingY: 1,
           textAlign: "center",
-          borderBottom: theme.vars.shape.smallBorder,
+          borderBottom: theme.vars.border.smallBorder,
           borderColor: theme.vars.palette.divider,
         }}>
           Settings

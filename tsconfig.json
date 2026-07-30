@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
@@ -12,6 +11,9 @@
       "ES2020",
       "DOM",
       "DOM.Iterable"
+    ],
+    "types": [
+      "vite/client"
     ],
     "module": "ESNext",
     "skipLibCheck": true,
