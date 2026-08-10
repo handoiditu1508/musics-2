@@ -2,7 +2,7 @@ import { formatSeconds } from "@/common/format";
 import { BreakpointsContext, lgAndUpMediaQuery, mdAndDownMediaQuery, smAndUpMediaQuery, xsMediaQuery } from "@/contexts/breakpoints";
 import useAppDispatch from "@/hooks/useAppDispatch";
 import useAppSelector from "@/hooks/useAppSelector";
-import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectNextAudioFile, selectPreviousAudioFile, selectSelectedAudioFile, selectVolume, setCurrentTimeout, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { audioFileSelectors, nextAudio, previousAudio, setCurrentTimeout, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -54,23 +54,22 @@ const repeatMap: Record<RepeatState, { title: string; icon: ReactNode; color?: I
 function AudioPlayer() {
   const theme = useTheme();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
-  const nextAudioFile = useAppSelector(selectNextAudioFile);
-  const prevAudioFile = useAppSelector(selectPreviousAudioFile);
-  const isShuffled = useAppSelector(selectIsAudioFilesShuffled);
+  const selectedAudioFile = useAppSelector(audioFileSelectors.selectedAudioFile);
+  const nextAudioFile = useAppSelector(audioFileSelectors.nextAudioFile);
+  const prevAudioFile = useAppSelector(audioFileSelectors.previousAudioFile);
+  const isShuffled = useAppSelector(audioFileSelectors.audioFilesShuffled);
   const audioDuration = selectedAudioFile ? selectedAudioFile.duration : 0;
   const audioRef = useRef<HTMLAudioElement>({} as HTMLAudioElement);
   const [currentTime, setCurrentTime] = useState(0);
   const [bufferedTime, setBufferedTime] = useState(0);
-  const isAutoPlay = useAppSelector(selectIsAutoPlay);
+  const isAutoPlay = useAppSelector(audioFileSelectors.autoPlay);
   const [repeatStateIndex, setRepeatStateIndex] = useState<number>(0);
   const repeatState: RepeatState = repeatStates[repeatStateIndex];
   const repeatStateData = repeatMap[repeatState];
-  const audioFiles = useAppSelector(selectAudioFiles);
-  const isLastInList = selectedAudioFile === audioFiles[audioFiles.length - 1];
-  const volume = useAppSelector(selectVolume);
-  const muted = useAppSelector(selectMuted);
-  const cooldownTime = useAppSelector(selectCooldownTime);
+  const isLastInList = useAppSelector(audioFileSelectors.selectedAudioFileLast);
+  const volume = useAppSelector(audioFileSelectors.volume);
+  const muted = useAppSelector(audioFileSelectors.muted);
+  const cooldownTime = useAppSelector(audioFileSelectors.cooldownTime);
   const nextSongTimeoutId = useRef<number>(undefined);
   const { smAndUp } = useContext(BreakpointsContext);
   const playButtonTitle = isPlaying
@@ -296,7 +295,14 @@ function AudioPlayer() {
       navigator.mediaSession.setActionHandler("seekbackward", null);
       navigator.mediaSession.setActionHandler("seekforward", null);
     };
-  }, [handleForwardButtonClick, handleNextButtonClick, handlePreviousButtonClick, handleReplayButtonClick, pauseAudio, playAudio]);
+  }, [
+    handleForwardButtonClick,
+    handleNextButtonClick,
+    handlePreviousButtonClick,
+    handleReplayButtonClick,
+    pauseAudio,
+    playAudio,
+  ]);
 
   return (
     <Box sx={{
@@ -362,7 +368,10 @@ function AudioPlayer() {
           </IconButton>
         </Tooltip>
         <Tooltip title={repeatStateData.title} placement="top">
-          <IconButton aria-label={repeatStateData.title} color={repeatStateData.color} onClick={handleRepeatButtonClick}>
+          <IconButton
+            aria-label={repeatStateData.title}
+            color={repeatStateData.color}
+            onClick={handleRepeatButtonClick}>
             {repeatStateData.icon}
           </IconButton>
         </Tooltip>

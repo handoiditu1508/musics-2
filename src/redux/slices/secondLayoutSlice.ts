@@ -37,9 +37,11 @@ export const {
   updateTabValue,
 } = secondLayoutSlice.actions;
 
-export const selectSidebarOpen = (state: RootState) => state.secondLayout.sidebarOpen;
-export const selectSidebarWidth = (state: RootState) => state.secondLayout.sidebarWidth;
-export const selectBottomHeight = (state: RootState) => state.secondLayout.bottomHeight;
-export const selectTabValue = (state: RootState) => state.secondLayout.tabValue;
+export const secondLayoutSelectors = {
+  sidebarOpen: (state: RootState) => state.secondLayout.sidebarOpen,
+  sidebarWidth: (state: RootState) => state.secondLayout.sidebarWidth,
+  bottomHeight: (state: RootState) => state.secondLayout.bottomHeight,
+  tabValue: (state: RootState) => state.secondLayout.tabValue,
+};
 
 export default secondLayoutSlice;

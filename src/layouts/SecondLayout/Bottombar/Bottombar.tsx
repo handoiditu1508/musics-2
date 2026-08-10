@@ -1,7 +1,7 @@
 import { BreakpointsContext } from "@/contexts/breakpoints";
 import useAppSelector from "@/hooks/useAppSelector";
-import { selectSelectedAudioFile } from "@/redux/slices/audioFileSlice";
-import { selectBottomHeight } from "@/redux/slices/secondLayoutSlice";
+import { audioFileSelectors } from "@/redux/slices/audioFileSlice";
+import { secondLayoutSelectors } from "@/redux/slices/secondLayoutSlice";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
@@ -13,8 +13,8 @@ import AudioPlayer from "./AudioPlayer";
 
 function Bottombar() {
   const theme = useTheme();
-  const bottomHeight = useAppSelector(selectBottomHeight);
-  const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
+  const bottomHeight = useAppSelector(secondLayoutSelectors.bottomHeight);
+  const selectedAudioFile = useAppSelector(audioFileSelectors.selectedAudioFile);
   const artistsText = selectedAudioFile ? selectedAudioFile.artists.join(", ") : "";
   const { lgAndUp } = useContext(BreakpointsContext);
 

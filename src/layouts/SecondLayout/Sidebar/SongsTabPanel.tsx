@@ -2,7 +2,7 @@ import SupportActionMenu, { SupportAction } from "@/components/SupportActionMenu
 import useAppDispatch from "@/hooks/useAppDispatch";
 import useAppSelector from "@/hooks/useAppSelector";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
-import { moveDown, moveUp, selectQueriedAudioFiles, selectQuery, selectSelectedAudioFileId, setAsNextAudio, updateQuery, updateSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
+import { audioFileSelectors, moveDown, moveUp, setAsNextAudio, updateQuery, updateSelectedAudioFileId } from "@/redux/slices/audioFileSlice";
 import ClearIcon from "@mui/icons-material/Clear";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -30,10 +30,10 @@ const StyledFixedSizeList = styled(FixedSizeList)(({ theme }) => theme.mixins.sc
 function CustomListItem(props: ListChildComponentProps) {
   const theme = useTheme();
   const { index, style } = props;
-  const audioFiles = useAppSelector(selectQueriedAudioFiles);
+  const audioFiles = useAppSelector(audioFileSelectors.queriedAudioFiles);
   const audioFile = audioFiles[index];
-  const query = useAppSelector(selectQuery);
-  const selectedId = useAppSelector(selectSelectedAudioFileId);
+  const query = useAppSelector(audioFileSelectors.query);
+  const selectedId = useAppSelector(audioFileSelectors.selectedAudioFileId);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const dispatch = useAppDispatch();
@@ -150,14 +150,14 @@ function CustomListItem(props: ListChildComponentProps) {
 
 function SongsTabPanel() {
   const theme = useTheme();
-  const query = useAppSelector(selectQuery);
+  const query = useAppSelector(audioFileSelectors.query);
   const [searchValue, setSearchValue] = useState<string>(query);
   const deferredSearchValue = useDeferredValue(searchValue);
   const [listHeight, setListHeight] = useState<number>(0);
   const listRef = useRef<HTMLDivElement>(null);
   const listSizeObserver = useRef<ResizeObserver>(null);
   const { isFetching, isError, refetch } = useGetAudioFilesQuery();
-  const filteredAudioFiles = useAppSelector(selectQueriedAudioFiles);
+  const filteredAudioFiles = useAppSelector(audioFileSelectors.queriedAudioFiles);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

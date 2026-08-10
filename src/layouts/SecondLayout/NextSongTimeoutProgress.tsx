@@ -1,7 +1,7 @@
 import { BreakpointsContext, smAndUpMediaQuery } from "@/contexts/breakpoints";
 import useAppDispatch from "@/hooks/useAppDispatch";
 import useAppSelector from "@/hooks/useAppSelector";
-import { selectCurrentTimeoutDuration, selectCurrentTimeoutId, setCurrentTimeout } from "@/redux/slices/audioFileSlice";
+import { audioFileSelectors, setCurrentTimeout } from "@/redux/slices/audioFileSlice";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
@@ -16,8 +16,8 @@ function NextSongTimeoutProgress() {
   const theme = useTheme();
   const [progress, setProgress] = useState<number>(0);
   const [countDown, setCountDown] = useState<number>(0);
-  const currentTimeoutId = useAppSelector(selectCurrentTimeoutId);
-  const currentTimeoutDuration = useAppSelector(selectCurrentTimeoutDuration);
+  const currentTimeoutId = useAppSelector(audioFileSelectors.currentTimeoutId);
+  const currentTimeoutDuration = useAppSelector(audioFileSelectors.currentTimeoutDuration);
   const { xsAndDown } = useContext(BreakpointsContext);
   const dispatch = useAppDispatch();
 

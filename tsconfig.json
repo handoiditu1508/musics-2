@@ -13,6 +13,7 @@
       "DOM.Iterable"
     ],
     "types": [
+      // Loads Vite's client declarations so TypeScript recognizes import.meta.env, HMR APIs, and imported asset modules.
       "vite/client"
     ],
     "module": "ESNext",
