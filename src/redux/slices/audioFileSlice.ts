@@ -312,6 +312,11 @@ export const selectQuery = (state: RootState) => state.audioFiles.query;
 export const selectQueriedAudioFiles = (state: RootState) => state.audioFiles.queriedAudioFiles;
 export const selectArtists = (state: RootState) => state.audioFiles.artists;
 export const selectIsAudioFilesShuffled = (state: RootState) => state.audioFiles.ids !== state.audioFiles.orderedIds;
+export const selectIsSelectedAudioFileLast = (state: RootState) => {
+  const { orderedIds, selectedId } = state.audioFiles;
+
+  return selectedId !== undefined && selectedId === orderedIds[orderedIds.length - 1];
+};
 export const selectIsAutoPlay = (state: RootState) => state.audioFiles.isAutoPlay;
 export const selectVolume = (state: RootState) => state.audioFiles.volume;
 export const selectMuted = (state: RootState) => state.audioFiles.muted;

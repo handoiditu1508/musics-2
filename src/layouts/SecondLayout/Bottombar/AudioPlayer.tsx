@@ -2,7 +2,7 @@ import { formatSeconds } from "@/common/format";
 import { BreakpointsContext, lgAndUpMediaQuery, mdAndDownMediaQuery, smAndUpMediaQuery, xsMediaQuery } from "@/contexts/breakpoints";
 import useAppDispatch from "@/hooks/useAppDispatch";
 import useAppSelector from "@/hooks/useAppSelector";
-import { nextAudio, previousAudio, selectAudioFiles, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectMuted, selectNextAudioFile, selectPreviousAudioFile, selectSelectedAudioFile, selectVolume, setCurrentTimeout, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
+import { nextAudio, previousAudio, selectCooldownTime, selectIsAudioFilesShuffled, selectIsAutoPlay, selectIsSelectedAudioFileLast, selectMuted, selectNextAudioFile, selectPreviousAudioFile, selectSelectedAudioFile, selectVolume, setCurrentTimeout, shuffleAudioFiles, unShuffleAudioFiles } from "@/redux/slices/audioFileSlice";
 import Forward10Icon from "@mui/icons-material/Forward10";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -66,8 +66,7 @@ function AudioPlayer() {
   const [repeatStateIndex, setRepeatStateIndex] = useState<number>(0);
   const repeatState: RepeatState = repeatStates[repeatStateIndex];
   const repeatStateData = repeatMap[repeatState];
-  const audioFiles = useAppSelector(selectAudioFiles);
-  const isLastInList = selectedAudioFile === audioFiles[audioFiles.length - 1];
+  const isLastInList = useAppSelector(selectIsSelectedAudioFileLast);
   const volume = useAppSelector(selectVolume);
   const muted = useAppSelector(selectMuted);
   const cooldownTime = useAppSelector(selectCooldownTime);
