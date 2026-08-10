@@ -296,7 +296,14 @@ function AudioPlayer() {
       navigator.mediaSession.setActionHandler("seekbackward", null);
       navigator.mediaSession.setActionHandler("seekforward", null);
     };
-  }, [handleForwardButtonClick, handleNextButtonClick, handlePreviousButtonClick, handleReplayButtonClick, pauseAudio, playAudio]);
+  }, [
+    handleForwardButtonClick,
+    handleNextButtonClick,
+    handlePreviousButtonClick,
+    handleReplayButtonClick,
+    pauseAudio,
+    playAudio,
+  ]);
 
   return (
     <Box sx={{
@@ -362,7 +369,10 @@ function AudioPlayer() {
           </IconButton>
         </Tooltip>
         <Tooltip title={repeatStateData.title} placement="top">
-          <IconButton aria-label={repeatStateData.title} color={repeatStateData.color} onClick={handleRepeatButtonClick}>
+          <IconButton
+            aria-label={repeatStateData.title}
+            color={repeatStateData.color}
+            onClick={handleRepeatButtonClick}>
             {repeatStateData.icon}
           </IconButton>
         </Tooltip>

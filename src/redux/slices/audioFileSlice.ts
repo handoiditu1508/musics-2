@@ -215,10 +215,14 @@ const queryAudioFiles = (state: AudioFilesState) => {
 
     if (queriedArtist) {
       queriedArtist = queriedArtist.toLowerCase();
-      state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.artists.some((artist) => artist.toLowerCase() === queriedArtist));
+      state.queriedAudioFiles = state.queriedAudioFiles.filter(
+        (audioFile) => audioFile.artists.some((artist) => artist.toLowerCase() === queriedArtist)
+      );
     } else {
       const query = state.query.toLowerCase();
-      state.queriedAudioFiles = state.queriedAudioFiles.filter((audioFile) => audioFile.name.toLowerCase().includes(query));
+      state.queriedAudioFiles = state.queriedAudioFiles.filter(
+        (audioFile) => audioFile.name.toLowerCase().includes(query)
+      );
     }
   }
 };
@@ -301,7 +305,9 @@ export const {
 } = audioFilesSelectors;
 
 export const selectSelectedAudioFileId = (state: RootState) => state.audioFiles.selectedId;
-export const selectSelectedAudioFile = (state: RootState) => (state.audioFiles.selectedId ? audioFilesSelectors.selectById(state, state.audioFiles.selectedId) : undefined);
+export const selectSelectedAudioFile = (state: RootState) => (state.audioFiles.selectedId
+  ? audioFilesSelectors.selectById(state, state.audioFiles.selectedId)
+  : undefined);
 export const selectQuery = (state: RootState) => state.audioFiles.query;
 export const selectQueriedAudioFiles = (state: RootState) => state.audioFiles.queriedAudioFiles;
 export const selectArtists = (state: RootState) => state.audioFiles.artists;

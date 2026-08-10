@@ -94,7 +94,12 @@ function ArtistsTabPanel() {
   const { isFetching, isError, refetch } = useGetAudioFilesQuery();
   const artists = useAppSelector(selectArtists);
   const lowerCaseSearchValue = deferredSearchValue.toLowerCase();
-  const queriedArtists = useMemo(() => lowerCaseSearchValue ? artists.filter((artist) => artist.toLowerCase().includes(lowerCaseSearchValue)) : artists, [artists, lowerCaseSearchValue]);
+  const queriedArtists = useMemo(
+    () => lowerCaseSearchValue
+      ? artists.filter((artist) => artist.toLowerCase().includes(lowerCaseSearchValue))
+      : artists,
+    [artists, lowerCaseSearchValue]
+  );
 
   useEffect(() => {
     listSizeObserver.current = new ResizeObserver((entries) => {
