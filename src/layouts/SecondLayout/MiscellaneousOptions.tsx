@@ -2,7 +2,7 @@ import { lgAndUpMediaQuery } from "@/contexts/breakpoints";
 import { InfoContext } from "@/contexts/info";
 import useAppDispatch from "@/hooks/useAppDispatch";
 import useAppSelector from "@/hooks/useAppSelector";
-import { selectCooldownTime, selectIsAutoPlay, selectMuted, selectVolume, setCooldownTime, setIsAutoPlay, setMuted, setVolume } from "@/redux/slices/audioFileSlice";
+import { audioFileSelectors, setCooldownTime, setIsAutoPlay, setMuted, setVolume } from "@/redux/slices/audioFileSlice";
 import AutoModeIcon from "@mui/icons-material/AutoMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
@@ -54,18 +54,18 @@ const getVolumeIcon = (volume: number, muted: boolean) => {
 
 function MiscellaneousOptions() {
   const theme = useTheme();
-  const volume = useAppSelector(selectVolume);
-  const muted = useAppSelector(selectMuted);
+  const volume = useAppSelector(audioFileSelectors.volume);
+  const muted = useAppSelector(audioFileSelectors.muted);
   const volumeTitle = volume && !muted ? "Volume" : "Muted volume";
   const volumeIcon = getVolumeIcon(volume, muted);
   const [volumeAnchorEl, setVolumeAnchorEl] = useState<HTMLElement | null>(null);
   const volumeOpen = Boolean(volumeAnchorEl);
   const volumeId = useId();
-  const isAutoPlay = useAppSelector(selectIsAutoPlay);
+  const isAutoPlay = useAppSelector(audioFileSelectors.autoPlay);
   const { mobile } = useContext(InfoContext);
   const [settingOpen, setSettingOpen] = useState(false);
   const settingTitleId = useId();
-  const cooldownTime = useAppSelector(selectCooldownTime);
+  const cooldownTime = useAppSelector(audioFileSelectors.cooldownTime);
   const { mode, setMode } = useColorScheme();
   const dispatch = useAppDispatch();
 

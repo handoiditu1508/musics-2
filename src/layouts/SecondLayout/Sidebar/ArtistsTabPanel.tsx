@@ -1,7 +1,7 @@
 import useAppDispatch from "@/hooks/useAppDispatch";
 import useAppSelector from "@/hooks/useAppSelector";
 import { useGetAudioFilesQuery } from "@/redux/apis/audioFileApi";
-import { selectArtists, updateArtistQuery } from "@/redux/slices/audioFileSlice";
+import { audioFileSelectors, updateArtistQuery } from "@/redux/slices/audioFileSlice";
 import { updateTabValue } from "@/redux/slices/secondLayoutSlice";
 import ClearIcon from "@mui/icons-material/Clear";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -92,7 +92,7 @@ function ArtistsTabPanel() {
   const listRef = useRef<HTMLDivElement>(null);
   const listSizeObserver = useRef<ResizeObserver>(null);
   const { isFetching, isError, refetch } = useGetAudioFilesQuery();
-  const artists = useAppSelector(selectArtists);
+  const artists = useAppSelector(audioFileSelectors.artists);
   const lowerCaseSearchValue = deferredSearchValue.toLowerCase();
   const queriedArtists = useMemo(
     () => lowerCaseSearchValue

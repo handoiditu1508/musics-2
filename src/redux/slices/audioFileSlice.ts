@@ -298,38 +298,37 @@ export const {
   setCurrentTimeout,
 } = audioFilesSlice.actions;
 
-const audioFilesSelectors = audioFilesAdapter.getSelectors<RootState>((state) => state.audioFiles);
+const entitySelectors = audioFilesAdapter.getSelectors<RootState>((state) => state.audioFiles);
 
-export const {
-  selectAll: selectAudioFiles,
-} = audioFilesSelectors;
+export const audioFileSelectors = {
+  audioFiles: entitySelectors.selectAll,
+  selectedAudioFileId: (state: RootState) => state.audioFiles.selectedId,
+  selectedAudioFile: (state: RootState) => (state.audioFiles.selectedId
+    ? entitySelectors.selectById(state, state.audioFiles.selectedId)
+    : undefined),
+  query: (state: RootState) => state.audioFiles.query,
+  queriedAudioFiles: (state: RootState) => state.audioFiles.queriedAudioFiles,
+  artists: (state: RootState) => state.audioFiles.artists,
+  audioFilesShuffled: (state: RootState) => state.audioFiles.ids !== state.audioFiles.orderedIds,
+  selectedAudioFileLast: (state: RootState) => {
+    const { orderedIds, selectedId } = state.audioFiles;
 
-export const selectSelectedAudioFileId = (state: RootState) => state.audioFiles.selectedId;
-export const selectSelectedAudioFile = (state: RootState) => (state.audioFiles.selectedId
-  ? audioFilesSelectors.selectById(state, state.audioFiles.selectedId)
-  : undefined);
-export const selectQuery = (state: RootState) => state.audioFiles.query;
-export const selectQueriedAudioFiles = (state: RootState) => state.audioFiles.queriedAudioFiles;
-export const selectArtists = (state: RootState) => state.audioFiles.artists;
-export const selectIsAudioFilesShuffled = (state: RootState) => state.audioFiles.ids !== state.audioFiles.orderedIds;
-export const selectIsSelectedAudioFileLast = (state: RootState) => {
-  const { orderedIds, selectedId } = state.audioFiles;
+    return selectedId !== undefined && selectedId === orderedIds[orderedIds.length - 1];
+  },
+  autoPlay: (state: RootState) => state.audioFiles.isAutoPlay,
+  volume: (state: RootState) => state.audioFiles.volume,
+  muted: (state: RootState) => state.audioFiles.muted,
+  cooldownTime: (state: RootState) => state.audioFiles.cooldownTime,
+  currentTimeoutId: (state: RootState) => state.audioFiles.currentTimeoutId,
+  currentTimeoutDuration: (state: RootState) => state.audioFiles.currentTimeoutDuration,
+  nextAudioFile: (state: RootState) => {
+    const nextId = getNextAudioFileId(state.audioFiles);
 
-  return selectedId !== undefined && selectedId === orderedIds[orderedIds.length - 1];
-};
-export const selectIsAutoPlay = (state: RootState) => state.audioFiles.isAutoPlay;
-export const selectVolume = (state: RootState) => state.audioFiles.volume;
-export const selectMuted = (state: RootState) => state.audioFiles.muted;
-export const selectCooldownTime = (state: RootState) => state.audioFiles.cooldownTime;
-export const selectCurrentTimeoutId = (state: RootState) => state.audioFiles.currentTimeoutId;
-export const selectCurrentTimeoutDuration = (state: RootState) => state.audioFiles.currentTimeoutDuration;
-export const selectNextAudioFile = (state: RootState) => {
-  const nextId = getNextAudioFileId(state.audioFiles);
+    return nextId ? entitySelectors.selectById(state, nextId) : undefined;
+  },
+  previousAudioFile: (state: RootState) => {
+    const previousId = getPreviousAudioFileId(state.audioFiles);
 
-  return nextId ? audioFilesSelectors.selectById(state, nextId) : undefined;
-};
-export const selectPreviousAudioFile = (state: RootState) => {
-  const previousId = getPreviousAudioFileId(state.audioFiles);
-
-  return previousId ? audioFilesSelectors.selectById(state, previousId) : undefined;
+    return previousId ? entitySelectors.selectById(state, previousId) : undefined;
+  },
 };

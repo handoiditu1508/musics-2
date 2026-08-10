@@ -1,7 +1,7 @@
 import Suspense from "@/components/Suspense";
 import { BreakpointsContext, xsMediaQuery } from "@/contexts/breakpoints";
 import useAppSelector from "@/hooks/useAppSelector";
-import { selectBottomHeight } from "@/redux/slices/secondLayoutSlice";
+import { secondLayoutSelectors } from "@/redux/slices/secondLayoutSlice";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
@@ -13,7 +13,7 @@ import Sidebar from "./Sidebar";
 
 function SecondLayout() {
   const theme = useTheme();
-  const bottomHeight = useAppSelector(selectBottomHeight);
+  const bottomHeight = useAppSelector(secondLayoutSelectors.bottomHeight);
   const { mdAndDown } = useContext(BreakpointsContext);
 
   return (

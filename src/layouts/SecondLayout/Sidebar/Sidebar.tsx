@@ -2,7 +2,7 @@ import CONFIG from "@/configs";
 import { BreakpointsContext, lgAndUpMediaQuery } from "@/contexts/breakpoints";
 import useAppDispatch from "@/hooks/useAppDispatch";
 import useAppSelector from "@/hooks/useAppSelector";
-import { selectBottomHeight, selectSidebarOpen, selectSidebarWidth, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
+import { secondLayoutSelectors, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
 import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
 import Drawer from "@mui/material/Drawer";
@@ -28,9 +28,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
 
 function Sidebar() {
   const theme = useTheme();
-  const sidebarWidth = useAppSelector(selectSidebarWidth);
-  const bottomHeight = useAppSelector(selectBottomHeight);
-  const open = useAppSelector(selectSidebarOpen);
+  const sidebarWidth = useAppSelector(secondLayoutSelectors.sidebarWidth);
+  const bottomHeight = useAppSelector(secondLayoutSelectors.bottomHeight);
+  const open = useAppSelector(secondLayoutSelectors.sidebarOpen);
   const dispatch = useAppDispatch();
   const { xsAndDown, lgAndUp } = useContext(BreakpointsContext);
   const togglingCss = lgAndUp ? (open ? openedMixin(theme, sidebarWidth) : closedMixin(theme)) : CONFIG.EMPTY_OBJECT;

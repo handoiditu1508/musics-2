@@ -1,7 +1,7 @@
 import { BreakpointsContext } from "@/contexts/breakpoints";
 import useAppDispatch from "@/hooks/useAppDispatch";
 import useAppSelector from "@/hooks/useAppSelector";
-import { selectSidebarOpen, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
+import { secondLayoutSelectors, toggleSidebar } from "@/redux/slices/secondLayoutSlice";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import AppBar from "@mui/material/AppBar";
@@ -15,7 +15,7 @@ import NextSongTimeoutProgress from "../NextSongTimeoutProgress";
 
 function Header() {
   const theme = useTheme();
-  const sidebarOpen = useAppSelector(selectSidebarOpen);
+  const sidebarOpen = useAppSelector(secondLayoutSelectors.sidebarOpen);
   const { xsAndDown } = useContext(BreakpointsContext);
   const dispatch = useAppDispatch();
 

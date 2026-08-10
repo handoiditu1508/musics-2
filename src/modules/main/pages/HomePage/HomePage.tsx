@@ -1,7 +1,7 @@
 import { formatBytes, formatSeconds } from "@/common/format";
 import useAppSelector from "@/hooks/useAppSelector";
 import { useGetLyricsQuery } from "@/redux/apis/audioFileApi";
-import { selectSelectedAudioFile } from "@/redux/slices/audioFileSlice";
+import { audioFileSelectors } from "@/redux/slices/audioFileSlice";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import { styled } from "@mui/material/styles";
@@ -15,7 +15,7 @@ const StyledTable = styled("table")(({ theme }) => ({
 }));
 
 function HomePage() {
-  const selectedAudioFile = useAppSelector(selectSelectedAudioFile);
+  const selectedAudioFile = useAppSelector(audioFileSelectors.selectedAudioFile);
   const lyricsFile = selectedAudioFile && selectedAudioFile.lyricsFile ? selectedAudioFile.lyricsFile : "";
   const { data, isFetching, isSuccess } = useGetLyricsQuery(lyricsFile, {
     skip: !lyricsFile,
