@@ -40,8 +40,8 @@ function CustomListItem(props: ListChildComponentProps) {
 
   const supportActions: SupportAction[] = [
     {
-      id: 1,
-      text: "Play this song next",
+      key: 1,
+      label: "Play this song next",
       disabled: audioFile.id === selectedId,
       actionHandler: () => {
         dispatch(setAsNextAudio(audioFile.id));
@@ -49,16 +49,16 @@ function CustomListItem(props: ListChildComponentProps) {
       },
     },
     {
-      id: 2,
-      text: "Move up",
+      key: 2,
+      label: "Move up",
       actionHandler: () => {
         dispatch(moveUp(audioFile.id));
         handleClose();
       },
     },
     {
-      id: 3,
-      text: "Move down",
+      key: 3,
+      label: "Move down",
       actionHandler: () => {
         dispatch(moveDown(audioFile.id));
         handleClose();
@@ -116,7 +116,7 @@ function CustomListItem(props: ListChildComponentProps) {
         aria-labelledby={`song-actions-button-${audioFile.id}`}
         open={open}
         anchorEl={anchorEl}
-        supportActions={supportActions}
+        items={supportActions}
         anchorOrigin={{
           vertical: "center",
           horizontal: "right",
