@@ -180,3 +180,6 @@ build
 # Vite auto-generated files
 vite.config.d.ts
 vite.config.js
+
+### Claude ###
+CLAUDE.local.md
