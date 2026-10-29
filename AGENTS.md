@@ -1,4 +1,4 @@
-# AGENTS.md
+# Project conventions
 
 ## Project overview
 
@@ -47,22 +47,8 @@
 - `npm run lint:fix` — apply ESLint auto-fixes.
 - `npm run preview` — preview the production build locally.
 
-## Personas
-
-- `agents/code-agent.md`: coding persona for application development purpose.
-- `agents/eslint-agent.md`: linting persona to keep eslint plugins up to date.
-
 ## Boundaries
 
-- ✅ Always do:
-  - Run `npm run lint:fix` to fix auto-fixable lint issues.
-  - Run `npm run lint` and report lint issues for generated code.
-  - Run `npm run tsc` and fix any generated code issues.
-  - Report all places where `any` is used in generated code.
-  - Place new agent rules in the most specific applicable persona file. Add a rule to `AGENTS.md` only when it applies repository-wide.
-  - Before adding an agent rule, check `AGENTS.md` and the applicable persona files; do not duplicate or restate an existing rule.
-  - When a rule is difficult to explain or would require lengthy prose, prefer a concise example code snippet that demonstrates it.
-  - Keep each agent rule to no more than two sentences.
 - ⚠️ Ask first:
   - Before modifying configuration files.
   - Before installing a new package.
