@@ -25,7 +25,7 @@ const audioFileApi = appApi.injectEndpoints({
     }),
     getLyrics: builder.query<string, string>({
       queryFn: async (lyricsFile, api, extraOptions, baseQuery) => {
-        var response = await fetch(`/${CONFIG.API_URL}lyrics/${lyricsFile}`);
+        var response = await fetch(`${CONFIG.API_URL}/lyrics/${lyricsFile}`);
 
         if (response.ok) {
           const lyrics = await response.text();
