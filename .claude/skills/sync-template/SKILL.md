@@ -1,6 +1,7 @@
 ---
 name: sync-template
 description: Fetch latest code from template repository
+disable-model-invocation: true
 ---
 
 ```bash
