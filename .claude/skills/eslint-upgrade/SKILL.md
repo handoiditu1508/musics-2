@@ -1,6 +1,7 @@
 ---
 name: eslint-upgrade
 description: Keep ESLint and plugins at latest versions, add new rules, remove obsolete ones, and maintain existing configurations
+disable-model-invocation: true
 ---
 
 1. **Audit phase**

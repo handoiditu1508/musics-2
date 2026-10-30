@@ -1,6 +1,7 @@
 ---
 name: deploy-github
 description: Deploy current branch to github pages
+disable-model-invocation: true
 ---
 
 ## Prepare to deploy to github pages

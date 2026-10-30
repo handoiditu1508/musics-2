@@ -33,3 +33,15 @@ export default {
 
 - node: 22.14.0
 - npm: 10.9.2
+
+## Fetch latest code from template repository
+
+[Sync template repository instructions](.claude/skills/sync-template/SKILL.md)
+
+## Prepare to deploy to github pages
+
+[Prepare to deploy to GitHub Pages](.claude/skills/deploy-github/SKILL.md#prepare-to-deploy-to-github-pages)
+
+## Deploy to github pages
+
+[Deploy to GitHub Pages](.claude/skills/deploy-github/SKILL.md#deploy-to-github-pages)
